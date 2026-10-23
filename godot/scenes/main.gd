@@ -14,6 +14,9 @@ var inventory_window: InventoryWindowUI
 var seed_selector: SeedSelectorUI
 
 func _ready() -> void:
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	farm_canvas.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	ui_overlay.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	ui_overlay.main_controller = self
 	inventory_window = InventoryWindowUI.new(
 		world,

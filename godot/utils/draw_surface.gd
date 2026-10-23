@@ -153,7 +153,7 @@ func draw_text_styled(text: String, x: float, y: float, style: Dictionary = {}) 
 	elif baseline_str == "bottom":
 		draw_y -= descent
 
-	canvas.draw_string(font, Vector2(draw_x, draw_y), text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
+	canvas.draw_string(font, Vector2(roundf(draw_x), roundf(draw_y)), text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
 
 static func measure_text(text: String, font_size: int = 14) -> float:
 	var font: Font = ThemeDB.fallback_font
