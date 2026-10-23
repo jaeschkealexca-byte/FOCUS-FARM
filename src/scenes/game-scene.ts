@@ -102,6 +102,11 @@ export class GameScene extends BaseScene {
     const i = MakkoEngine.input;
     if (this.focus.visible) { this.focus.handleInput(); return; }
     if (this.shop.visible) { this.shop.handleInput(); return; }
+    if (i.isMousePressed(0) && this.isCoinShopButtonHovered(i.mouseX, i.mouseY)) {
+      this.inventoryWindow?.close();
+      this.shop.open(this.world, () => this.persist());
+      return;
+    }
     if (i.isKeyPressed('KeyI')) {
       if (this.inventoryWindow?.visible) this.inventoryWindow.close();
       else this.inventoryWindow?.open();
@@ -321,59 +326,143 @@ export class GameScene extends BaseScene {
     };
   }
 
-  private renderCoinHud(): void {
-    const display = MakkoEngine.display;
-    const asset = MakkoEngine.staticAsset('ui_window_coins');
-    const rightMargin = 24;
-    const y = 244;
+  private getCoinShopButtonBounds(): { x: number; y: number; w: number; h: number } {
+    const cardX = 24;
+    const cardY = 171;
+    const cardW = 316;
+    const cardH = 52;
+    const w = 88;
+    const h = 30;
+    return {
+      x: cardX + cardW - w - 12,
+      y: cardY + (cardH - h) / 2,
+      w,
+      h,
+    };
+  }
 
-    if (!asset || !asset.image.complete || asset.image.naturalWidth <= 0 || asset.image.naturalHeight <= 0) {
-      // Cozy fallback coin badge while image asset loads
-      const text = `🪙 ${this.world.coins}`;
-      const font = 'bold 22px "Courier New", monospace';
-      const w = Math.max(140, display.measureText(text, { font }).width + 36);
-      const h = 48;
-      const x = display.width - w - rightMargin;
-      display.drawRoundRect(x, y, w, h, 12, { fill: '#f5ead4', stroke: '#c9a878', lineWidth: 2 });
-      display.drawText(text, x + w / 2, y + h / 2, { font, fill: '#463625', align: 'center', baseline: 'middle' });
+  private isCoinShopButtonHovered(mx: number, my: number): boolean {
+    if (this.shop.visible || this.focus.visible) return false;
+    const b = this.getCoinShopButtonBounds();
+    return mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h;
+  }
+
+  private renderCoinHud(): void {
+    const d = MakkoEngine.display;
+    const input = MakkoEngine.input;
+    const w = this.shop.visible ? 340 : 316;
+    const h = 52;
+    const x = this.shop.visible ? Math.round((d.width - w) / 2) : 24;
+    const y = this.shop.visible ? 40 : 171;
+
+    // Outer wooden frame with drop shadow matching the farm UI panels
+    d.drawRoundRect(x + 3, y + 4, w, h, 14, { fill: '#17130f', alpha: 0.28 });
+    d.drawRoundRect(x, y, w, h, 14, {
+      fill: '#3e3326',
+      stroke: '#c9a878',
+      lineWidth: 2,
+    });
+
+    // Inner warm parchment card with gilded border
+    d.drawRoundRect(x + 5, y + 5, w - 10, h - 10, 10, {
+      fill: '#f7edd9',
+      stroke: '#d8bc8c',
+      lineWidth: 1,
+    });
+
+    // Retro 12x12 pixel-art gold coin icon
+    this.drawRetroCoinIcon(x + 16, y + Math.round((h - 30) / 2), 2.5);
+
+    // Vertically centered gold balance
+    const balanceText = `${this.world.coins.toLocaleString()} Coins`;
+    d.drawText(balanceText, x + 56, y + h / 2, {
+      font: 'bold 20px monospace',
+      fill: '#463219',
+      align: 'left',
+      baseline: 'middle',
+    });
+
+    if (!this.shop.visible) {
+      // Interactive "Shop [B]" button next to the gold balance
+      const btn = this.getCoinShopButtonBounds();
+      const hovered = this.isCoinShopButtonHovered(input.mouseX, input.mouseY);
+      d.drawRoundRect(btn.x, btn.y + 1, btn.w, btn.h, 8, {
+        fill: '#17130f',
+        alpha: 0.16,
+      });
+      d.drawRoundRect(btn.x, btn.y, btn.w, btn.h, 8, {
+        fill: hovered ? '#7a965e' : '#69834f',
+        stroke: hovered ? '#e6cfa3' : '#4a5e36',
+        lineWidth: 1.5,
+      });
+      d.drawText('Shop [B]', btn.x + btn.w / 2, btn.y + btn.h / 2, {
+        font: 'bold 12px monospace',
+        fill: '#fff8e7',
+        align: 'center',
+        baseline: 'middle',
+      });
       return;
     }
 
-    const sourceWidth = asset.image.naturalWidth;
-    const sourceHeight = asset.image.naturalHeight;
-    const targetHeight = asset.height;
-    const scale = targetHeight / sourceHeight;
-    const leftSourceWidth = Math.round(sourceWidth * 0.34);
-    const rightSourceWidth = Math.round(sourceWidth * 0.17);
-    const middleSourceWidth = sourceWidth - leftSourceWidth - rightSourceWidth;
-    const leftWidth = leftSourceWidth * scale;
-    const rightWidth = rightSourceWidth * scale;
-    const minimumMiddleWidth = middleSourceWidth * scale;
-    const balance = String(this.world.coins);
-    const fontSize = 32;
-    const font = `bold ${fontSize}px "Courier New", monospace`;
-    const textWidth = display.measureText(balance, { font }).width;
-    const textPadding = 16;
-    const middleWidth = Math.max(minimumMiddleWidth, textWidth + textPadding * 2);
-    const barWidth = leftWidth + middleWidth + rightWidth;
-    const x = display.width - barWidth - rightMargin;
+    // While inside the shop, show pending harvest value or shopping hint
+    const pendingValue = this.world.totalProduceValue;
+    const pillText = pendingValue > 0 ? `+${pendingValue}g in bag` : 'Click seed';
+    const pillFont = 'bold 11px monospace';
+    const pillW = Math.max(76, d.measureText(pillText, { font: pillFont }).width + 18);
+    const pillH = 26;
+    const pillX = x + w - pillW - 12;
+    const pillY = y + (h - pillH) / 2;
 
-    // Keep both decorated ends intact and expand only the plain center strip.
-    display.drawImageRegion(
-      asset.image, 0, 0, leftSourceWidth, sourceHeight,
-      x, y, leftWidth, targetHeight,
-    );
-    display.drawImageRegion(
-      asset.image, leftSourceWidth, 0, middleSourceWidth, sourceHeight,
-      x + leftWidth, y, middleWidth, targetHeight,
-    );
-    display.drawImageRegion(
-      asset.image, sourceWidth - rightSourceWidth, 0, rightSourceWidth, sourceHeight,
-      x + leftWidth + middleWidth, y, rightWidth, targetHeight,
-    );
-
-    display.drawText(balance, x + leftWidth + textPadding, y + targetHeight / 2, {
-      font, fill: '#000000', align: 'left', baseline: 'middle',
+    d.drawRoundRect(pillX, pillY, pillW, pillH, 8, {
+      fill: pendingValue > 0 ? '#dfead2' : '#efe1c3',
+      stroke: pendingValue > 0 ? '#799962' : '#c9ae82',
+      lineWidth: 1.5,
     });
+    d.drawText(pillText, pillX + pillW / 2, pillY + pillH / 2, {
+      font: pillFont,
+      fill: pendingValue > 0 ? '#3a5e2c' : '#6b5335',
+      align: 'center',
+      baseline: 'middle',
+    });
+  }
+
+  private drawRetroCoinIcon(originX: number, originY: number, pixelSize: number): void {
+    const d = MakkoEngine.display;
+    const palette: Record<string, string> = {
+      B: '#5a3508', // dark bronze pixel outline
+      S: '#c47812', // warm amber shadow bevel
+      G: '#f4b825', // classic retro gold body
+      Y: '#ffe259', // bright yellow highlight
+      W: '#fff9c4', // specular glint
+    };
+    const rows = [
+      '....BBBB....',
+      '..BBYYYGBB..',
+      '.BYWWYGGGSB.',
+      '.BYWYGBSGSB.',
+      'BYYYGBWGGGSB',
+      'BYGGGBWGGGSB',
+      'BGGGGBYGGGSB',
+      'BGGGGBYGGSSB',
+      '.BGGGGBSSSB.',
+      '.BSGGGGSSSB.',
+      '..BBSSSSBB..',
+      '....BBBB....',
+    ];
+
+    for (let r = 0; r < rows.length; r++) {
+      const row = rows[r];
+      for (let c = 0; c < row.length; c++) {
+        const fill = palette[row[c]];
+        if (!fill) continue;
+        d.drawRect(
+          originX + c * pixelSize,
+          originY + r * pixelSize,
+          Math.ceil(pixelSize),
+          Math.ceil(pixelSize),
+          { fill },
+        );
+      }
+    }
   }
 }

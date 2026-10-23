@@ -27,7 +27,7 @@ export class InventoryWindow {
   private page = 0;
 
   private readonly x = 46;
-  private readonly y = 210;
+  private readonly y = 236;
   private readonly width = 430;
   private readonly height = 680;
   private readonly filters: InventoryFilter[] = ['All', 'Seeds', 'Harvest', 'Tools'];
