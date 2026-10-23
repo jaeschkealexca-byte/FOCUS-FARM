@@ -6,11 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "export:godot": "node scripts/export-assets-to-godot.mjs"
   },
   "devDependencies": {
     "typescript": "^5.7.2",
     "vite": "^6.0.0"
   }
 }
-

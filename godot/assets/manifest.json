@@ -1,0 +1,772 @@
+{
+  "potatoe_1": {
+    "path": "res://assets/sprites/potatoe_1.png",
+    "width": 385,
+    "height": 474
+  },
+  "strawberry_1": {
+    "path": "res://assets/sprites/strawberry_1.png",
+    "width": 377,
+    "height": 454
+  },
+  "couliflower_1": {
+    "path": "res://assets/sprites/couliflower_1.png",
+    "width": 442,
+    "height": 527
+  },
+  "carrot_1": {
+    "path": "res://assets/sprites/carrot_1.png",
+    "width": 522,
+    "height": 674
+  },
+  "potato_s1": {
+    "path": "res://assets/sprites/potato_s1.png",
+    "width": 315,
+    "height": 328
+  },
+  "potato_s2": {
+    "path": "res://assets/sprites/potato_s2.png",
+    "width": 331,
+    "height": 449
+  },
+  "potato_s3": {
+    "path": "res://assets/sprites/potato_s3.png",
+    "width": 1360,
+    "height": 768
+  },
+  "potato_s4": {
+    "path": "res://assets/sprites/potato_s4.webp",
+    "width": 1360,
+    "height": 768
+  },
+  "potato_s4_1": {
+    "path": "res://assets/sprites/potato_s4_1.png",
+    "width": 719,
+    "height": 753
+  },
+  "strawberries_s1": {
+    "path": "res://assets/sprites/strawberries_s1.png",
+    "width": 397,
+    "height": 295
+  },
+  "strawberries_s2": {
+    "path": "res://assets/sprites/strawberries_s2.png",
+    "width": 488,
+    "height": 451
+  },
+  "strawberries_s3": {
+    "path": "res://assets/sprites/strawberries_s3.png",
+    "width": 582,
+    "height": 536
+  },
+  "strawberries_s4": {
+    "path": "res://assets/sprites/strawberries_s4.png",
+    "width": 636,
+    "height": 604
+  },
+  "ui_time_coins_season_on_farm": {
+    "path": "res://assets/sprites/ui_time_coins_season_on_farm.png",
+    "width": 1024,
+    "height": 599
+  },
+  "focus_timer_ui_on_farm": {
+    "path": "res://assets/sprites/focus_timer_ui_on_farm.png",
+    "width": 1024,
+    "height": 381
+  },
+  "soil_tile_1": {
+    "path": "res://assets/sprites/soil_tile_1.webp",
+    "width": 1024,
+    "height": 1024
+  },
+  "grass_tile_1": {
+    "path": "res://assets/sprites/grass_tile_1.webp",
+    "width": 1024,
+    "height": 1024
+  },
+  "soil_tile_2": {
+    "path": "res://assets/sprites/soil_tile_2.webp",
+    "width": 1024,
+    "height": 1024
+  },
+  "cauliflower_s4": {
+    "path": "res://assets/sprites/cauliflower_s4.png",
+    "width": 845,
+    "height": 739
+  },
+  "cauliflower_s3": {
+    "path": "res://assets/sprites/cauliflower_s3.png",
+    "width": 711,
+    "height": 636
+  },
+  "cauliflower_s2": {
+    "path": "res://assets/sprites/cauliflower_s2.png",
+    "width": 714,
+    "height": 588
+  },
+  "cauliflower_s1": {
+    "path": "res://assets/sprites/cauliflower_s1.png",
+    "width": 402,
+    "height": 327
+  },
+  "carrot_s3": {
+    "path": "res://assets/sprites/carrot_s3.png",
+    "width": 655,
+    "height": 702
+  },
+  "carrot_s1": {
+    "path": "res://assets/sprites/carrot_s1.png",
+    "width": 238,
+    "height": 150
+  },
+  "carrot_s2": {
+    "path": "res://assets/sprites/carrot_s2.png",
+    "width": 410,
+    "height": 335
+  },
+  "ui_focus": {
+    "path": "res://assets/sprites/ui_focus.webp",
+    "width": 1360,
+    "height": 768
+  },
+  "ui_focus_restart_icon": {
+    "path": "res://assets/sprites/ui_focus_restart_icon.webp",
+    "width": 1024,
+    "height": 1024
+  },
+  "ui_focus_play_icon": {
+    "path": "res://assets/sprites/ui_focus_play_icon.webp",
+    "width": 1024,
+    "height": 1024
+  },
+  "ui_focus_timer_wide": {
+    "path": "res://assets/sprites/ui_focus_timer_wide.webp",
+    "width": 1024,
+    "height": 1024
+  },
+  "ui_focus_tasklist_wide": {
+    "path": "res://assets/sprites/ui_focus_tasklist_wide.webp",
+    "width": 1024,
+    "height": 1024
+  },
+  "ui_focus_task_icon": {
+    "path": "res://assets/sprites/ui_focus_task_icon.webp",
+    "width": 1024,
+    "height": 1024
+  },
+  "ui_focus_shop_icon": {
+    "path": "res://assets/sprites/ui_focus_shop_icon.webp",
+    "width": 1024,
+    "height": 1024
+  },
+  "ui_focus_house_button": {
+    "path": "res://assets/sprites/ui_focus_house_button.webp",
+    "width": 1024,
+    "height": 1024
+  },
+  "ui_focus_farm": {
+    "path": "res://assets/sprites/ui_focus_farm.webp",
+    "width": 1024,
+    "height": 1024
+  },
+  "ui_window_coins": {
+    "path": "res://assets/sprites/ui_window_coins.png",
+    "width": 1024,
+    "height": 1024
+  },
+  "ui_focus_1": {
+    "path": "res://assets/sprites/ui_focus_1.webp",
+    "width": 1360,
+    "height": 768
+  },
+  "ui_focus_reset": {
+    "path": "res://assets/sprites/ui_focus_reset.png",
+    "width": 1253,
+    "height": 583
+  },
+  "test_1": {
+    "path": "res://assets/sprites/test_1.png",
+    "width": 1024,
+    "height": 1024
+  },
+  "grass_1": {
+    "path": "res://assets/sprites/grass_1.png",
+    "width": 870,
+    "height": 407
+  },
+  "grass_2": {
+    "path": "res://assets/sprites/grass_2.png",
+    "width": 533,
+    "height": 413
+  },
+  "grass_3": {
+    "path": "res://assets/sprites/grass_3.png",
+    "width": 542,
+    "height": 685
+  },
+  "shop_ui": {
+    "path": "res://assets/sprites/shop_ui.png",
+    "width": 1071,
+    "height": 662
+  },
+  "spring_shop_ui": {
+    "path": "res://assets/sprites/spring_shop_ui.png",
+    "width": 802,
+    "height": 777
+  },
+  "autumn_shop_ui": {
+    "path": "res://assets/sprites/autumn_shop_ui.png",
+    "width": 810,
+    "height": 786
+  },
+  "summer_shop_ui": {
+    "path": "res://assets/sprites/summer_shop_ui.png",
+    "width": 813,
+    "height": 779
+  },
+  "winter_shop_ui": {
+    "path": "res://assets/sprites/winter_shop_ui.png",
+    "width": 834,
+    "height": 794
+  },
+  "shop_icon_ui": {
+    "path": "res://assets/sprites/shop_icon_ui.png",
+    "width": 682,
+    "height": 807
+  },
+  "garlic_1": {
+    "path": "res://assets/sprites/garlic_1.png",
+    "width": 706,
+    "height": 864
+  },
+  "rhubarb_1": {
+    "path": "res://assets/sprites/rhubarb_1.png",
+    "width": 699,
+    "height": 866
+  },
+  "kale_redesign_1": {
+    "path": "res://assets/sprites/kale_redesign_1.png",
+    "width": 589,
+    "height": 727
+  },
+  "blueberry_1": {
+    "path": "res://assets/sprites/blueberry_1.png",
+    "width": 678,
+    "height": 843
+  },
+  "melon_1": {
+    "path": "res://assets/sprites/melon_1.png",
+    "width": 597,
+    "height": 777
+  },
+  "tomato_1": {
+    "path": "res://assets/sprites/tomato_1.png",
+    "width": 531,
+    "height": 695
+  },
+  "red_cabbage_1": {
+    "path": "res://assets/sprites/red_cabbage_1.png",
+    "width": 640,
+    "height": 803
+  },
+  "cranberrie_1": {
+    "path": "res://assets/sprites/cranberrie_1.png",
+    "width": 600,
+    "height": 784
+  },
+  "grape_1": {
+    "path": "res://assets/sprites/grape_1.png",
+    "width": 618,
+    "height": 767
+  },
+  "pumpkin_1": {
+    "path": "res://assets/sprites/pumpkin_1.png",
+    "width": 614,
+    "height": 797
+  },
+  "beet_1": {
+    "path": "res://assets/sprites/beet_1.png",
+    "width": 555,
+    "height": 710
+  },
+  "corn_1": {
+    "path": "res://assets/sprites/corn_1.png",
+    "width": 641,
+    "height": 840
+  },
+  "eggplant_1": {
+    "path": "res://assets/sprites/eggplant_1.png",
+    "width": 636,
+    "height": 797
+  },
+  "bok_choy_1": {
+    "path": "res://assets/sprites/bok_choy_1.png",
+    "width": 614,
+    "height": 828
+  },
+  "brocolli_1": {
+    "path": "res://assets/sprites/brocolli_1.png",
+    "width": 660,
+    "height": 799
+  },
+  "eggplant_1_1": {
+    "path": "res://assets/sprites/eggplant_1_1.png",
+    "width": 676,
+    "height": 837
+  },
+  "leek_1": {
+    "path": "res://assets/sprites/leek_1.png",
+    "width": 588,
+    "height": 796
+  },
+  "radish_1": {
+    "path": "res://assets/sprites/radish_1.png",
+    "width": 632,
+    "height": 833
+  },
+  "spinach": {
+    "path": "res://assets/sprites/spinach.png",
+    "width": 585,
+    "height": 772
+  },
+  "parsnip_1": {
+    "path": "res://assets/sprites/parsnip_1.png",
+    "width": 536,
+    "height": 737
+  },
+  "tomato_s1": {
+    "path": "res://assets/sprites/tomato_s1.png",
+    "width": 254,
+    "height": 203
+  },
+  "tomato_s2": {
+    "path": "res://assets/sprites/tomato_s2.png",
+    "width": 403,
+    "height": 389
+  },
+  "tomato_s3": {
+    "path": "res://assets/sprites/tomato_s3.png",
+    "width": 529,
+    "height": 622
+  },
+  "tomato_s4": {
+    "path": "res://assets/sprites/tomato_s4.png",
+    "width": 464,
+    "height": 619
+  },
+  "garlic_1_1": {
+    "path": "res://assets/sprites/garlic_1_1.png",
+    "width": 237,
+    "height": 248
+  },
+  "garlic_s2": {
+    "path": "res://assets/sprites/garlic_s2.png",
+    "width": 154,
+    "height": 298
+  },
+  "garlic_s3": {
+    "path": "res://assets/sprites/garlic_s3.png",
+    "width": 490,
+    "height": 718
+  },
+  "rhubarb_s1": {
+    "path": "res://assets/sprites/rhubarb_s1.png",
+    "width": 322,
+    "height": 299
+  },
+  "rhubarb_s3": {
+    "path": "res://assets/sprites/rhubarb_s3.png",
+    "width": 638,
+    "height": 685
+  },
+  "rhubarb_s2": {
+    "path": "res://assets/sprites/rhubarb_s2.png",
+    "width": 293,
+    "height": 430
+  },
+  "kale_s1": {
+    "path": "res://assets/sprites/kale_s1.png",
+    "width": 313,
+    "height": 251
+  },
+  "kale_s2": {
+    "path": "res://assets/sprites/kale_s2.png",
+    "width": 424,
+    "height": 438
+  },
+  "kale_s3": {
+    "path": "res://assets/sprites/kale_s3.png",
+    "width": 688,
+    "height": 557
+  },
+  "kale_s4": {
+    "path": "res://assets/sprites/kale_s4.png",
+    "width": 775,
+    "height": 639
+  },
+  "corn_s1": {
+    "path": "res://assets/sprites/corn_s1.png",
+    "width": 165,
+    "height": 223
+  },
+  "corn_s2": {
+    "path": "res://assets/sprites/corn_s2.png",
+    "width": 206,
+    "height": 225
+  },
+  "corn_s3": {
+    "path": "res://assets/sprites/corn_s3.png",
+    "width": 420,
+    "height": 441
+  },
+  "corn_s4": {
+    "path": "res://assets/sprites/corn_s4.png",
+    "width": 407,
+    "height": 808
+  },
+  "melon_s1": {
+    "path": "res://assets/sprites/melon_s1.png",
+    "width": 345,
+    "height": 297
+  },
+  "melon_s2": {
+    "path": "res://assets/sprites/melon_s2.png",
+    "width": 453,
+    "height": 490
+  },
+  "melon_s3": {
+    "path": "res://assets/sprites/melon_s3.png",
+    "width": 492,
+    "height": 458
+  },
+  "melon_s4": {
+    "path": "res://assets/sprites/melon_s4.png",
+    "width": 656,
+    "height": 620
+  },
+  "blueberry_s1": {
+    "path": "res://assets/sprites/blueberry_s1.png",
+    "width": 287,
+    "height": 255
+  },
+  "blueberry_s2": {
+    "path": "res://assets/sprites/blueberry_s2.png",
+    "width": 333,
+    "height": 329
+  },
+  "blueberry_s3": {
+    "path": "res://assets/sprites/blueberry_s3.png",
+    "width": 491,
+    "height": 469
+  },
+  "blueberry_s4": {
+    "path": "res://assets/sprites/blueberry_s4.png",
+    "width": 405,
+    "height": 417
+  },
+  "cranberry_s1": {
+    "path": "res://assets/sprites/cranberry_s1.png",
+    "width": 140,
+    "height": 184
+  },
+  "cranberry_2": {
+    "path": "res://assets/sprites/cranberry_2.png",
+    "width": 399,
+    "height": 389
+  },
+  "cranberry_s3": {
+    "path": "res://assets/sprites/cranberry_s3.png",
+    "width": 574,
+    "height": 396
+  },
+  "cranberry_s4": {
+    "path": "res://assets/sprites/cranberry_s4.png",
+    "width": 549,
+    "height": 502
+  },
+  "pumpkin_s3": {
+    "path": "res://assets/sprites/pumpkin_s3.png",
+    "width": 566,
+    "height": 491
+  },
+  "pumpkin_s2": {
+    "path": "res://assets/sprites/pumpkin_s2.png",
+    "width": 549,
+    "height": 492
+  },
+  "pumpkin_s4": {
+    "path": "res://assets/sprites/pumpkin_s4.png",
+    "width": 683,
+    "height": 481
+  },
+  "pumpkin_s1": {
+    "path": "res://assets/sprites/pumpkin_s1.png",
+    "width": 186,
+    "height": 270
+  },
+  "beet_s1": {
+    "path": "res://assets/sprites/beet_s1.png",
+    "width": 209,
+    "height": 346
+  },
+  "beet_s2": {
+    "path": "res://assets/sprites/beet_s2.png",
+    "width": 244,
+    "height": 264
+  },
+  "beet_s3": {
+    "path": "res://assets/sprites/beet_s3.png",
+    "width": 662,
+    "height": 540
+  },
+  "beet_s4": {
+    "path": "res://assets/sprites/beet_s4.png",
+    "width": 481,
+    "height": 581
+  },
+  "eggplant_s1": {
+    "path": "res://assets/sprites/eggplant_s1.png",
+    "width": 174,
+    "height": 185
+  },
+  "eggplant_s2": {
+    "path": "res://assets/sprites/eggplant_s2.png",
+    "width": 271,
+    "height": 296
+  },
+  "eggplant_s3": {
+    "path": "res://assets/sprites/eggplant_s3.png",
+    "width": 459,
+    "height": 463
+  },
+  "eggplant_s4": {
+    "path": "res://assets/sprites/eggplant_s4.png",
+    "width": 684,
+    "height": 606
+  },
+  "broccoli_s1": {
+    "path": "res://assets/sprites/broccoli_s1.png",
+    "width": 116,
+    "height": 173
+  },
+  "broccoli_s2": {
+    "path": "res://assets/sprites/broccoli_s2.png",
+    "width": 352,
+    "height": 317
+  },
+  "broccoli_s3": {
+    "path": "res://assets/sprites/broccoli_s3.png",
+    "width": 495,
+    "height": 435
+  },
+  "broccoli_s4": {
+    "path": "res://assets/sprites/broccoli_s4.png",
+    "width": 863,
+    "height": 642
+  },
+  "parsnip_s1": {
+    "path": "res://assets/sprites/parsnip_s1.png",
+    "width": 188,
+    "height": 229
+  },
+  "parsnip_s4": {
+    "path": "res://assets/sprites/parsnip_s4.png",
+    "width": 469,
+    "height": 533
+  },
+  "parsnip_s3": {
+    "path": "res://assets/sprites/parsnip_s3.png",
+    "width": 341,
+    "height": 342
+  },
+  "parsnip_s2": {
+    "path": "res://assets/sprites/parsnip_s2.png",
+    "width": 408,
+    "height": 383
+  },
+  "radish_s1": {
+    "path": "res://assets/sprites/radish_s1.png",
+    "width": 175,
+    "height": 194
+  },
+  "radish_s2": {
+    "path": "res://assets/sprites/radish_s2.png",
+    "width": 256,
+    "height": 194
+  },
+  "radish_s3": {
+    "path": "res://assets/sprites/radish_s3.png",
+    "width": 393,
+    "height": 434
+  },
+  "radish_s4": {
+    "path": "res://assets/sprites/radish_s4.png",
+    "width": 718,
+    "height": 509
+  },
+  "spinach_s1": {
+    "path": "res://assets/sprites/spinach_s1.png",
+    "width": 253,
+    "height": 205
+  },
+  "spinach_s2": {
+    "path": "res://assets/sprites/spinach_s2.png",
+    "width": 359,
+    "height": 311
+  },
+  "spinach_s3": {
+    "path": "res://assets/sprites/spinach_s3.png",
+    "width": 537,
+    "height": 507
+  },
+  "spinach_s4": {
+    "path": "res://assets/sprites/spinach_s4.png",
+    "width": 745,
+    "height": 566
+  },
+  "leek_s1": {
+    "path": "res://assets/sprites/leek_s1.png",
+    "width": 261,
+    "height": 208
+  },
+  "leek_s2": {
+    "path": "res://assets/sprites/leek_s2.png",
+    "width": 166,
+    "height": 346
+  },
+  "leek_s3": {
+    "path": "res://assets/sprites/leek_s3.png",
+    "width": 450,
+    "height": 566
+  },
+  "leek_s4": {
+    "path": "res://assets/sprites/leek_s4.png",
+    "width": 530,
+    "height": 844
+  },
+  "grape_s1": {
+    "path": "res://assets/sprites/grape_s1.png",
+    "width": 116,
+    "height": 212
+  },
+  "grape_s2": {
+    "path": "res://assets/sprites/grape_s2.png",
+    "width": 224,
+    "height": 240
+  },
+  "grape_s3": {
+    "path": "res://assets/sprites/grape_s3.png",
+    "width": 388,
+    "height": 564
+  },
+  "grape_s4": {
+    "path": "res://assets/sprites/grape_s4.png",
+    "width": 536,
+    "height": 638
+  },
+  "parsnip_2": {
+    "path": "res://assets/sprites/parsnip_2.png",
+    "width": 410,
+    "height": 839
+  },
+  "spinach_2": {
+    "path": "res://assets/sprites/spinach_2.png",
+    "width": 664,
+    "height": 784
+  },
+  "radish_2": {
+    "path": "res://assets/sprites/radish_2.png",
+    "width": 516,
+    "height": 745
+  },
+  "leek_2": {
+    "path": "res://assets/sprites/leek_2.png",
+    "width": 449,
+    "height": 816
+  },
+  "garlic_2": {
+    "path": "res://assets/sprites/garlic_2.png",
+    "width": 666,
+    "height": 669
+  },
+  "kale_s2_1": {
+    "path": "res://assets/sprites/kale_s2_1.png",
+    "width": 616,
+    "height": 688
+  },
+  "rhubarb_2": {
+    "path": "res://assets/sprites/rhubarb_2.png",
+    "width": 663,
+    "height": 757
+  },
+  "broccoli_2": {
+    "path": "res://assets/sprites/broccoli_2.png",
+    "width": 658,
+    "height": 735
+  },
+  "eggplant_2": {
+    "path": "res://assets/sprites/eggplant_2.png",
+    "width": 382,
+    "height": 603
+  },
+  "beet_2": {
+    "path": "res://assets/sprites/beet_2.png",
+    "width": 505,
+    "height": 722
+  },
+  "pumpkin_2": {
+    "path": "res://assets/sprites/pumpkin_2.png",
+    "width": 523,
+    "height": 559
+  },
+  "melon_2": {
+    "path": "res://assets/sprites/melon_2.png",
+    "width": 565,
+    "height": 633
+  },
+  "blueberry_2": {
+    "path": "res://assets/sprites/blueberry_2.png",
+    "width": 696,
+    "height": 629
+  },
+  "corn_2": {
+    "path": "res://assets/sprites/corn_2.png",
+    "width": 562,
+    "height": 740
+  },
+  "cranberry_2_1": {
+    "path": "res://assets/sprites/cranberry_2_1.png",
+    "width": 560,
+    "height": 618
+  },
+  "tomato_2": {
+    "path": "res://assets/sprites/tomato_2.png",
+    "width": 548,
+    "height": 581
+  },
+  "strawberry_2": {
+    "path": "res://assets/sprites/strawberry_2.png",
+    "width": 532,
+    "height": 660
+  },
+  "potato_2": {
+    "path": "res://assets/sprites/potato_2.png",
+    "width": 570,
+    "height": 672
+  },
+  "carrot_2": {
+    "path": "res://assets/sprites/carrot_2.png",
+    "width": 404,
+    "height": 644
+  },
+  "cauliflower_2": {
+    "path": "res://assets/sprites/cauliflower_2.png",
+    "width": 665,
+    "height": 632
+  },
+  "grape_2": {
+    "path": "res://assets/sprites/grape_2.png",
+    "width": 520,
+    "height": 681
+  }
+}
