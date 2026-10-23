@@ -32,7 +32,7 @@ async function main() {
   MakkoEngine.display.setImageSmoothing(false);  // Pixel art
 
   // Capture game keys
-  MakkoEngine.input.capture(['Space', 'Enter', 'Escape', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyW', 'KeyA', 'KeyS', 'KeyD', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'KeyE', 'KeyF', 'KeyB', 'KeyI', 'KeyV']);
+  MakkoEngine.input.capture(['Space', 'Enter', 'Escape', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyW', 'KeyA', 'KeyS', 'KeyD', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'KeyE', 'KeyF', 'KeyB', 'KeyI', 'KeyV', 'KeyQ']);
 
   // Initialize and start game
   const game = new Game();

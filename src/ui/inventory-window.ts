@@ -1,6 +1,6 @@
 import { MakkoEngine, type IDisplay } from '@makko/engine';
 import type { FarmWorld } from '../farm/farm-world';
-import { drawCropEmblem, drawSeedPacket, getCropDef } from '../farm/crops';
+import { drawCropEmblem, drawSeedPacket, formatGrowthTime, getCropDef } from '../farm/crops';
 
 type InventoryFilter = 'All' | 'Seeds' | 'Harvest' | 'Tools';
 type EntryKind = 'seed' | 'produce' | 'tool';
@@ -27,7 +27,7 @@ export class InventoryWindow {
   private page = 0;
 
   private readonly x = 46;
-  private readonly y = 220;
+  private readonly y = 210;
   private readonly width = 430;
   private readonly height = 680;
   private readonly filters: InventoryFilter[] = ['All', 'Seeds', 'Harvest', 'Tools'];
@@ -126,8 +126,16 @@ export class InventoryWindow {
       return;
     }
 
+    if (!input.isMousePressed(0)) return;
     const slot = this.toolbarSlotAt(input.mouseX, input.mouseY);
-    if (slot >= 0) this.selectHotbarSlot(slot);
+    if (slot >= 0) {
+      if (slot === 1 && this.getTool() === 1) {
+        this.world.cycleSelectedSeed(1);
+        this.save();
+      } else {
+        this.selectHotbarSlot(slot);
+      }
+    }
   }
 
   update(_dt: number): void {
@@ -152,29 +160,70 @@ export class InventoryWindow {
 
   renderToolbar(): void {
     const d = MakkoEngine.display;
+    const input = MakkoEngine.input;
+    const mx = input.mouseX;
+    const my = input.mouseY;
+
     const x = (1920 - 760) / 2;
     const y = 975;
-    d.drawRoundRect(x - 13, y - 11, 786, 92, 18, { fill: '#3e3326', alpha: 0.88, stroke: '#c9a878', lineWidth: 2 });
+    d.drawRoundRect(x - 15, y - 9, 790, 92, 18, { fill: '#17130f', alpha: 0.3 });
+    d.drawRoundRect(x - 13, y - 11, 786, 92, 18, { fill: '#3e3326', alpha: 0.92, stroke: '#c9a878', lineWidth: 2 });
+
+    // Subtle divider between built-in tools (1-4) and quick-access slots (5-8)
+    const dividerX = x + 4 * 95 - 5.5;
+    d.drawLine(dividerX, y + 6, dividerX, y + 64, { stroke: '#7a6348', lineWidth: 2 });
+
+    const hoveredSlot = this.toolbarSlotAt(mx, my);
+
     for (let slot = 0; slot < 8; slot++) {
       const sx = x + slot * 95;
       const sy = y;
       const active = slot < 4 ? this.getTool() === slot : this.selectedStackMatches(this.toolbarEntry(slot - 4));
+      const hovered = hoveredSlot === slot;
+
       d.drawRoundRect(sx, sy, 84, 70, 10, {
-        fill: active ? '#f6e4b8' : '#e3d0aa',
-        stroke: active ? '#b87538' : '#aa8a60',
+        fill: active ? '#f6e4b8' : hovered ? '#eee0be' : '#e3d0aa',
+        stroke: active ? '#b87538' : hovered ? '#c79252' : '#aa8a60',
         lineWidth: active ? 3 : 1.5,
       });
-      d.drawRoundRect(sx + 5, sy + 5, 74, 60, 7, { fill: active ? '#fff6df' : '#f4ead3' });
-      d.drawText(String(slot + 1), sx + 11, sy + 10, { font: 'bold 12px monospace', fill: '#6c5034', align: 'left', baseline: 'top' });
-      if (slot < 4) {
+      d.drawRoundRect(sx + 5, sy + 5, 74, 60, 7, { fill: active ? '#fff6df' : hovered ? '#faf1dc' : '#f4ead3' });
+      d.drawText(String(slot + 1), sx + 10, sy + 9, { font: 'bold 11px monospace', fill: '#6c5034', align: 'left', baseline: 'top' });
+
+      if (slot === 1) {
+        // Live Selected Seed preview inside Slot [2]
+        const crop = getCropDef(this.world.selectedSeedId);
+        const count = this.world.seeds[crop.id] ?? 0;
+        drawSeedPacket(crop, sx + 26, sy + 8, 32, 38);
+        const shortName = crop.name.length > 9 ? `${crop.name.slice(0, 8)}…` : crop.name;
+        d.drawText(shortName, sx + 42, sy + 56, {
+          font: 'bold 10px monospace',
+          fill: active ? '#3f5a36' : '#59432d',
+          align: 'center',
+          baseline: 'middle',
+        });
+        // Owned count badge in top-right of slot 2
+        d.drawRoundRect(sx + 52, sy + 7, 26, 15, 4, {
+          fill: count > 0 ? '#4c7a39' : '#a75e49',
+        });
+        d.drawText(`×${count}`, sx + 65, sy + 14.5, {
+          font: 'bold 10px monospace',
+          fill: '#ffffff',
+          align: 'center',
+          baseline: 'middle',
+        });
+      } else if (slot < 4) {
         const icons = ['⚒', '🌱', '💧', '✦'];
         d.drawText(icons[slot], sx + 42, sy + 28, { font: '25px serif', fill: '#5c7547', align: 'center', baseline: 'middle' });
         d.drawText(['Hoe', 'Seeds', 'Water', 'Harvest'][slot], sx + 42, sy + 55, { font: '11px monospace', fill: '#59432d', align: 'center', baseline: 'middle' });
       } else {
         const stack = this.toolbarEntry(slot - 4);
-        if (stack) this.drawStackIcon(stack, sx + 42, sy + 33, 30);
+        if (stack) this.drawStackIcon(stack, sx + 42, sy + 30, 30);
         else d.drawText('·', sx + 42, sy + 34, { font: '24px serif', fill: '#b7a68a', align: 'center', baseline: 'middle' });
-        if (stack) d.drawText(`×${stack.count}`, sx + 70, sy + 59, { font: 'bold 11px monospace', fill: '#4c663b', align: 'right', baseline: 'middle' });
+        if (stack) {
+          const shortLabel = stack.id ? getCropDef(stack.id).name.slice(0, 7) : '';
+          d.drawText(shortLabel, sx + 10, sy + 56, { font: '10px monospace', fill: '#6c5034', align: 'left', baseline: 'middle' });
+          d.drawText(`×${stack.count}`, sx + 74, sy + 56, { font: 'bold 11px monospace', fill: '#4c663b', align: 'right', baseline: 'middle' });
+        }
       }
     }
   }
@@ -182,6 +231,9 @@ export class InventoryWindow {
   render(): void {
     if (!this.visible) return;
     const d = MakkoEngine.display;
+    const input = MakkoEngine.input;
+    const mx = input.mouseX;
+    const my = input.mouseY;
     const entries = this.filteredEntries();
     const visibleEntries = entries.slice(this.page * 6, this.page * 6 + 6);
     const pageCount = Math.max(1, Math.ceil(entries.length / 6));
@@ -193,18 +245,24 @@ export class InventoryWindow {
     d.drawRoundRect(this.x + 17, this.y + 17, this.width - 34, this.height - 34, 16, { fill: '#fff5df' });
     d.drawRoundRect(this.x + 22, this.y + 22, this.width - 44, 55, 13, { fill: '#719166' });
     d.drawText('✿  MY BACKPACK', this.x + 38, this.y + 49, { font: 'bold 24px serif', fill: '#fff8e7', align: 'left', baseline: 'middle' });
-    d.drawRoundRect(this.x + this.width - 54, this.y + 25, 38, 34, 9, { fill: '#a75e49' });
+    const closeHover = this.contains(mx, my, this.x + this.width - 54, this.y + 25, 38, 34);
+    d.drawRoundRect(this.x + this.width - 54, this.y + 25, 38, 34, 9, { fill: closeHover ? '#bf6b53' : '#a75e49' });
     d.drawText('×', this.x + this.width - 35, this.y + 42, { font: 'bold 22px serif', fill: '#fff8e7', align: 'center', baseline: 'middle' });
 
     for (let index = 0; index < this.filters.length; index++) {
       const filter = this.filters[index];
       const tx = this.x + 20 + index * 97;
       const active = this.filter === filter;
-      d.drawRoundRect(tx, this.y + 88, 91, 38, 10, { fill: active ? '#829d70' : '#f2e5cc', stroke: active ? '#58744f' : '#d4c09e', lineWidth: 1.5 });
+      const hovered = this.contains(mx, my, tx, this.y + 88, 91, 38);
+      d.drawRoundRect(tx, this.y + 88, 91, 38, 10, {
+        fill: active ? '#829d70' : hovered ? '#f7edda' : '#f2e5cc',
+        stroke: active ? '#58744f' : hovered ? '#bda37c' : '#d4c09e',
+        lineWidth: 1.5,
+      });
       d.drawText(filter, tx + 45, this.y + 107, { font: 'bold 13px monospace', fill: active ? '#fff9e9' : '#67533b', align: 'center', baseline: 'middle' });
     }
 
-    d.drawText('YOUR THINGS', this.x + 24, this.y + 140, { font: 'bold 13px monospace', fill: '#8b7151', align: 'left', baseline: 'middle' });
+    d.drawText('YOUR THINGS  (Click a seed to equip)', this.x + 24, this.y + 140, { font: 'bold 12px monospace', fill: '#8b7151', align: 'left', baseline: 'middle' });
     for (let index = 0; index < 6; index++) {
       const entry = visibleEntries[index];
       const col = index % 2;
@@ -212,39 +270,59 @@ export class InventoryWindow {
       const sx = this.x + 20 + col * 192;
       const sy = this.y + 151 + row * 75;
       const selected = !!entry && this.selectedKey === entry.key;
-      d.drawRoundRect(sx, sy, 185, 69, 11, { fill: selected ? '#e4efcf' : '#f8edda', stroke: selected ? '#779464' : '#dfcdae', lineWidth: selected ? 2 : 1 });
+      const hovered = !!entry && this.contains(mx, my, sx, sy, 185, 69);
+      const isEquippedSeed = entry?.kind === 'seed' && this.world.selectedSeedId === entry.id;
+
+      d.drawRoundRect(sx, sy, 185, 69, 11, {
+        fill: selected ? '#e4efcf' : hovered ? '#fcf4e6' : '#f8edda',
+        stroke: selected ? '#779464' : isEquippedSeed ? '#8aa870' : hovered ? '#cbb492' : '#dfcdae',
+        lineWidth: selected ? 2.5 : isEquippedSeed ? 2 : 1,
+      });
       if (!entry) continue;
-      this.drawStackIcon(entry, sx + 35, sy + 34, 36);
-      const displayName = entry.name.length > 15 ? `${entry.name.slice(0, 14)}…` : entry.name;
-      d.drawText(displayName, sx + 63, sy + 26, { font: 'bold 13px monospace', fill: '#513e2b', align: 'left', baseline: 'middle' });
-      d.drawText(entry.kind === 'tool' ? 'Farm tool' : `Quantity  ×${entry.count}`, sx + 63, sy + 48, { font: '11px monospace', fill: '#887359', align: 'left', baseline: 'middle' });
+      this.drawStackIcon(entry, sx + 32, sy + 34, 36);
+      const displayName = entry.name.length > 14 ? `${entry.name.slice(0, 13)}…` : entry.name;
+      d.drawText(displayName, sx + 60, sy + 24, { font: 'bold 13px monospace', fill: '#513e2b', align: 'left', baseline: 'middle' });
+      d.drawText(entry.kind === 'tool' ? 'Farm tool' : `Quantity  ×${entry.count}`, sx + 60, sy + 44, { font: '11px monospace', fill: '#887359', align: 'left', baseline: 'middle' });
+
+      if (isEquippedSeed) {
+        d.drawRoundRect(sx + 60, sy + 51, 66, 14, 4, { fill: '#5c8248' });
+        d.drawText('✓ ACTIVE', sx + 93, sy + 58, { font: 'bold 9px monospace', fill: '#ffffff', align: 'center', baseline: 'middle' });
+      }
     }
 
-    d.drawRoundRect(this.x + 20, this.y + 470, this.width - 40, 115, 13, { fill: '#f0e1c5', stroke: '#d1b993', lineWidth: 1.5 });
+    d.drawRoundRect(this.x + 20, this.y + 455, this.width - 40, 116, 13, { fill: '#f0e1c5', stroke: '#d1b993', lineWidth: 1.5 });
     const selected = this.findSelectedEntry(entries);
-    d.drawText('A LITTLE ABOUT IT', this.x + 34, this.y + 489, { font: 'bold 12px monospace', fill: '#8b7151', align: 'left', baseline: 'middle' });
+    d.drawText('A LITTLE ABOUT IT', this.x + 34, this.y + 473, { font: 'bold 12px monospace', fill: '#8b7151', align: 'left', baseline: 'middle' });
     if (selected) {
-      this.drawStackIcon(selected, this.x + 58, this.y + 541, 40);
-      d.drawText(selected.name, this.x + 91, this.y + 527, { font: 'bold 16px serif', fill: '#4f5f3f', align: 'left', baseline: 'middle' });
+      this.drawStackIcon(selected, this.x + 56, this.y + 522, 40);
+      d.drawText(selected.name, this.x + 88, this.y + 498, { font: 'bold 16px serif', fill: '#4f5f3f', align: 'left', baseline: 'middle' });
+      if (selected.kind === 'seed' || selected.kind === 'produce') {
+        const crop = getCropDef(selected.id);
+        const metaLine = `${crop.seasonIcon} ${crop.season}  ·  ⏱ ${formatGrowthTime(crop.growthMinutes)} focus  ·  🪙 Ships for ${crop.sellPrice}`;
+        d.drawText(metaLine, this.x + 88, this.y + 517, { font: 'bold 11px monospace', fill: '#5c7547', align: 'left', baseline: 'middle' });
+      }
       const details = this.wrapDescription(selected.description, 42);
-      d.drawText(details[0] ?? '', this.x + 91, this.y + 549, { font: '11px monospace', fill: '#725d44', align: 'left', baseline: 'middle' });
-      d.drawText(details[1] ?? '', this.x + 91, this.y + 568, { font: '11px monospace', fill: '#725d44', align: 'left', baseline: 'middle' });
+      d.drawText(details[0] ?? '', this.x + 88, this.y + 536, { font: '11px monospace', fill: '#725d44', align: 'left', baseline: 'middle' });
+      d.drawText(details[1] ?? '', this.x + 88, this.y + 553, { font: '11px monospace', fill: '#725d44', align: 'left', baseline: 'middle' });
     } else {
-      d.drawText('Your pockets are ready for a new find.', this.x + 34, this.y + 540, { font: '13px serif', fill: '#725d44', align: 'left', baseline: 'middle' });
+      d.drawText('Your pockets are ready for a new find.', this.x + 34, this.y + 525, { font: '13px serif', fill: '#725d44', align: 'left', baseline: 'middle' });
     }
 
     const selectedKey = selected?.kind === 'tool' ? '' : selected?.key ?? '';
     const isOnToolbar = selectedKey !== '' && this.world.toolbarSlots.includes(selectedKey);
-    this.drawActionButton(d, this.x + 20, this.y + 580, 'Add to bar', selectedKey !== '' && !isOnToolbar && this.world.toolbarSlots.includes(null));
-    this.drawActionButton(d, this.x + 150, this.y + 580, 'Remove from bar', isOnToolbar);
-    this.drawActionButton(d, this.x + 280, this.y + 580, 'Delete stack', selected?.kind === 'seed' || selected?.kind === 'produce');
+    const canAdd = selectedKey !== '' && !isOnToolbar && this.world.toolbarSlots.includes(null);
+    const canDelete = selected?.kind === 'seed' || selected?.kind === 'produce';
+
+    this.drawActionButton(d, this.x + 20, this.y + 580, 'Add to bar', canAdd, this.contains(mx, my, this.x + 20, this.y + 580, 120, 26));
+    this.drawActionButton(d, this.x + 150, this.y + 580, 'Remove from bar', isOnToolbar, this.contains(mx, my, this.x + 150, this.y + 580, 120, 26));
+    this.drawActionButton(d, this.x + 280, this.y + 580, 'Delete stack', canDelete, this.contains(mx, my, this.x + 280, this.y + 580, 120, 26));
 
     d.drawText(`${this.page + 1} / ${pageCount}`, this.x + this.width - 76, this.y + 622, { font: '13px monospace', fill: '#876d4e', align: 'center', baseline: 'middle' });
     if (pageCount > 1) {
       d.drawText('‹', this.x + this.width - 123, this.y + 622, { font: 'bold 20px serif', fill: '#765a3b', align: 'center', baseline: 'middle' });
       d.drawText('›', this.x + this.width - 29, this.y + 622, { font: 'bold 20px serif', fill: '#765a3b', align: 'center', baseline: 'middle' });
     }
-    d.drawText('I / ESC  Close backpack', this.x + this.width / 2, this.y + 665, { font: '11px monospace', fill: '#947b5c', align: 'center', baseline: 'middle' });
+    d.drawText('I / ESC  Close backpack', this.x + this.width / 2, this.y + 662, { font: '11px monospace', fill: '#947b5c', align: 'center', baseline: 'middle' });
   }
 
   private addSelectedToToolbar(): void {
@@ -294,9 +372,9 @@ export class InventoryWindow {
     this.save();
   }
 
-  private drawActionButton(d: IDisplay, x: number, y: number, label: string, enabled: boolean): void {
+  private drawActionButton(d: IDisplay, x: number, y: number, label: string, enabled: boolean, hovered = false): void {
     d.drawRoundRect(x, y, 120, 26, 7, {
-      fill: enabled ? '#829d70' : '#ded2bd',
+      fill: enabled ? (hovered ? '#6f8c5d' : '#829d70') : '#ded2bd',
       stroke: enabled ? '#58744f' : '#cbbda8',
       lineWidth: 1,
     });
@@ -315,6 +393,8 @@ export class InventoryWindow {
       changed = this.world.selectedSeedId !== entry.id || this.getTool() !== 1;
       this.world.selectedSeedId = entry.id;
       this.setTool(1);
+      const crop = getCropDef(entry.id);
+      this.world.message = `Selected: ${crop.name} Seeds (${entry.count} in pouch). Press E on tilled soil to plant.`;
     } else if (entry.kind === 'produce') {
       changed = this.getTool() !== 3;
       this.setTool(3);
@@ -408,7 +488,7 @@ export class InventoryWindow {
   }
 
   private wrapDescription(text: string, maxLength: number): string[] {
-    const words = text.split(/\\s+/);
+    const words = text.split(/\s+/);
     const lines: string[] = [];
     let line = '';
     for (const word of words) {

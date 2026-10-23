@@ -41,6 +41,16 @@ export class FarmWorld {
     return Object.values(this.produce).reduce((sum, count) => sum + count, 0);
   }
 
+  get totalProduceValue(): number {
+    let total = 0;
+    for (const [id, count] of Object.entries(this.produce)) {
+      if (count > 0) {
+        total += getCropDef(id).sellPrice * count;
+      }
+    }
+    return total;
+  }
+
   canEnter(x: number, y: number): boolean {
     return (
       Number.isInteger(x) &&
@@ -63,11 +73,16 @@ export class FarmWorld {
   }
 
   cycleSelectedSeed(dir = 1): void {
-    const available = CROP_LIST.filter(c => (this.seeds[c.id] ?? 0) > 0);
-    const pool = available.length > 0 ? available : CROP_LIST;
-    const currentIndex = pool.findIndex(c => c.id === this.selectedSeedId);
-    const nextIndex = (currentIndex + dir + pool.length) % pool.length;
-    this.selectedSeedId = pool[nextIndex].id;
+    const ownedIds = Object.keys(this.seeds).filter(id => (this.seeds[id] ?? 0) > 0);
+    if (ownedIds.length === 0) {
+      this.message = 'Your seed pouch is empty! Open the Seed Shop [B] to buy seeds.';
+      return;
+    }
+    const currentIndex = ownedIds.indexOf(this.selectedSeedId);
+    const nextIndex = currentIndex < 0
+      ? 0
+      : (currentIndex + dir + ownedIds.length) % ownedIds.length;
+    this.selectedSeedId = ownedIds[nextIndex];
     const crop = getCropDef(this.selectedSeedId);
     const count = this.seeds[crop.id] ?? 0;
     this.message = `Selected: ${crop.name} Seeds (${count} in pouch). Press E to plant.`;
@@ -154,7 +169,7 @@ export class FarmWorld {
       }
       if (!p.mature) {
         const def = p.cropDef;
-        this.message = `Growing ${def.name}: ${p.growth} / ${def.growthMinutes} focused minutes completed.`;
+        this.message = `Growing ${def.name}: ${formatGrowthTime(p.growth)} / ${formatGrowthTime(def.growthMinutes)} focused time completed.`;
         return false;
       }
 
@@ -369,18 +384,65 @@ export class FarmWorld {
     const plot = this.plotAt(gridX, gridY);
     if (!plot?.planted) return;
 
-    const label = plot.cropDef.seedName;
-    const font = 'bold 15px monospace';
-    const paddingX = 12;
-    const tooltipWidth = display.measureText(label, { font }).width + paddingX * 2;
-    const tooltipHeight = 32;
-    const tooltipX = Math.min(mouseX + 14, display.width - tooltipWidth - 10);
-    const tooltipY = Math.min(mouseY + 14, display.height - tooltipHeight - 10);
+    const crop = plot.cropDef;
+    const title = `${crop.seasonIcon} ${crop.name}`;
+    const growthLine = plot.mature
+      ? '✦ Mature — Ready to harvest [4]'
+      : `⏱ ${formatGrowthTime(plot.growth)} / ${formatGrowthTime(crop.growthMinutes)} (${plot.growthPercent}%)`;
+    const subLine = plot.mature
+      ? `🪙 Ships for ${crop.sellPrice} coins`
+      : plot.watered
+        ? '💧 Watered · Grows next Focus [F]'
+        : 'Needs water · Use Watering Can [3]';
 
-    display.drawRoundRect(tooltipX + 2, tooltipY + 3, tooltipWidth, tooltipHeight, 8, { fill: '#17130f', alpha: 0.35 });
-    display.drawRoundRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight, 8, { fill: '#fff5df', stroke: '#779464', lineWidth: 2 });
-    display.drawText(label, tooltipX + tooltipWidth / 2, tooltipY + tooltipHeight / 2, {
-      font, fill: '#405539', align: 'center', baseline: 'middle',
+    const titleFont = 'bold 14px monospace';
+    const subFont = '12px monospace';
+    const paddingX = 14;
+    const contentW = Math.max(
+      display.measureText(title, { font: titleFont }).width,
+      display.measureText(growthLine, { font: subFont }).width,
+      display.measureText(subLine, { font: subFont }).width,
+      190,
+    );
+    const tooltipWidth = contentW + paddingX * 2;
+    const tooltipHeight = 82;
+    const tooltipX = Math.min(mouseX + 16, display.width - tooltipWidth - 12);
+    const tooltipY = Math.min(mouseY + 16, display.height - tooltipHeight - 12);
+
+    display.drawRoundRect(tooltipX + 3, tooltipY + 4, tooltipWidth, tooltipHeight, 10, { fill: '#17130f', alpha: 0.35 });
+    display.drawRoundRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight, 10, {
+      fill: '#fff7e5',
+      stroke: plot.mature ? '#c28b2c' : '#779464',
+      lineWidth: 2,
+    });
+
+    display.drawText(title, tooltipX + paddingX, tooltipY + 18, {
+      font: titleFont,
+      fill: '#3c5233',
+      align: 'left',
+      baseline: 'middle',
+    });
+    display.drawText(growthLine, tooltipX + paddingX, tooltipY + 38, {
+      font: subFont,
+      fill: plot.mature ? '#8c5d19' : '#526348',
+      align: 'left',
+      baseline: 'middle',
+    });
+
+    // Mini growth progress bar
+    const barW = tooltipWidth - paddingX * 2;
+    const barY = tooltipY + 50;
+    display.drawRoundRect(tooltipX + paddingX, barY, barW, 6, 3, { fill: '#e3d5bc' });
+    const fillRatio = plot.mature ? 1 : Math.max(0.06, plot.growthPercent / 100);
+    display.drawRoundRect(tooltipX + paddingX, barY, barW * fillRatio, 6, 3, {
+      fill: plot.mature ? '#d99b26' : plot.watered ? '#5698a8' : '#7a9e64',
+    });
+
+    display.drawText(subLine, tooltipX + paddingX, tooltipY + 68, {
+      font: subFont,
+      fill: plot.mature ? '#6e5634' : plot.watered ? '#386f80' : '#9c5b3b',
+      align: 'left',
+      baseline: 'middle',
     });
   }
 
