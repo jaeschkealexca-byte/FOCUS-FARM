@@ -1,6 +1,13 @@
 import { MakkoEngine } from '@makko/engine';
 import type { FarmWorld } from '../farm/farm-world';
-import { type CropDef, type Season, getCropsBySeason } from '../farm/crops';
+import {
+  type CropDef,
+  type Season,
+  drawSeedPacket,
+  formatGrowthTime,
+  getCropDef,
+  getCropsBySeason,
+} from '../farm/crops';
 
 type ShopSeason = Exclude<Season, 'All'>;
 
@@ -9,6 +16,7 @@ export class ShopWindow {
   private world: FarmWorld | null = null;
   private save: (() => void) | null = null;
   private selectedSeason: ShopSeason = 'Spring';
+  private selectedCropId: string | null = null;
   private page = 0;
   readonly itemsPerPage = 7;
 
@@ -29,6 +37,7 @@ export class ShopWindow {
     this.save = save;
     this.visible = true;
     this.selectedSeason = 'Spring';
+    this.selectedCropId = null;
     this.page = 0;
   }
 
@@ -87,9 +96,15 @@ export class ShopWindow {
     for (let index = 0; index < shown.length; index++) {
       const position = this.seedCardPosition(index, shown.length);
       if (this.isInRect(mx, my, position.x, position.y, cards.w, cards.h)) {
-        this.purchase(shown[index]);
+        this.selectedCropId = shown[index].id;
         return;
       }
+    }
+
+    const buyBtn = this.purchaseButtonBounds();
+    if (this.selectedCropId && this.isInRect(mx, my, buyBtn.x, buyBtn.y, buyBtn.w, buyBtn.h)) {
+      this.purchase(getCropDef(this.selectedCropId));
+      return;
     }
 
     const pageCount = Math.max(1, Math.ceil(crops.length / this.itemsPerPage));
@@ -119,6 +134,7 @@ export class ShopWindow {
     });
     this.drawSeasonTabs(input.mouseX, input.mouseY);
     this.drawCropGrid(input.mouseX, input.mouseY);
+    this.drawPurchasePanel(input.mouseX, input.mouseY);
   }
 
   private closeHitbox(): { x: number; y: number; w: number; h: number } {
@@ -155,7 +171,29 @@ export class ShopWindow {
 
   private switchSeason(season: ShopSeason): void {
     this.selectedSeason = season;
+    this.selectedCropId = null;
     this.page = 0;
+  }
+
+  private purchasePanelBounds(): { x: number; y: number; w: number; h: number } {
+    return {
+      x: this.winX + 165,
+      y: this.winY + 468,
+      w: 1087,
+      h: 160,
+    };
+  }
+
+  private purchaseButtonBounds(): { x: number; y: number; w: number; h: number } {
+    const panel = this.purchasePanelBounds();
+    const w = 216;
+    const h = 58;
+    return {
+      x: panel.x + panel.w - w - 22,
+      y: panel.y + Math.round((panel.h - h) / 2),
+      w,
+      h,
+    };
   }
 
   private purchase(crop: CropDef): void {
@@ -203,6 +241,7 @@ export class ShopWindow {
       const cx = position.x;
       const cy = position.y;
       const hovered = this.isInRect(mx, my, cx, cy, cards.w, cards.h);
+      const selected = this.selectedCropId === crop.id;
       const cardAsset = MakkoEngine.staticAsset('shop_icon_ui');
       if (cardAsset?.image.complete && cardAsset.image.naturalWidth > 0) {
         display.drawImage(cardAsset.image, cx, cy, cards.w, cards.h);
@@ -211,7 +250,14 @@ export class ShopWindow {
           fill: '#d7b98c', stroke: '#805631', lineWidth: 2,
         });
       }
-      if (hovered) {
+      if (selected) {
+        display.drawRoundRect(cx - 3, cy - 3, cards.w + 6, cards.h + 6, 16, {
+          stroke: '#69834f', lineWidth: 4,
+        });
+        display.drawRoundRect(cx + 1, cy + 1, cards.w - 2, cards.h - 2, 14, {
+          stroke: '#ffe28a', lineWidth: 3,
+        });
+      } else if (hovered) {
         display.drawRoundRect(cx + 2, cy + 2, cards.w - 4, cards.h - 4, 14, {
           stroke: '#ffe28a', lineWidth: 3,
         });
@@ -244,6 +290,19 @@ export class ShopWindow {
       display.drawText(priceText, rowLeft + coinSize + coinGap, priceY, {
         font: priceFont, fill: '#000000', align: 'left', baseline: 'middle',
       });
+
+      if (selected) {
+        const badgeW = 92;
+        const badgeH = 20;
+        const badgeX = cx + (cards.w - badgeW) / 2;
+        const badgeY = cy - 10;
+        display.drawRoundRect(badgeX, badgeY, badgeW, badgeH, 6, {
+          fill: '#587444', stroke: '#f2d38a', lineWidth: 1.5,
+        });
+        display.drawText('✓ SELECTED', badgeX + badgeW / 2, badgeY + badgeH / 2, {
+          font: 'bold 10px monospace', fill: '#fff8e7', align: 'center', baseline: 'middle',
+        });
+      }
     }
 
     const pageCount = Math.max(1, Math.ceil(crops.length / this.itemsPerPage));
@@ -257,6 +316,163 @@ export class ShopWindow {
       });
       this.drawPageButton(nextX, navY, '▶', this.page < pageCount - 1, this.isInRect(mx, my, nextX, navY, 48, 36));
     }
+  }
+
+  private drawPurchasePanel(mx: number, my: number): void {
+    const d = MakkoEngine.display;
+    const panel = this.purchasePanelBounds();
+    const buyBtn = this.purchaseButtonBounds();
+
+    // Wooden outer frame + parchment inner board
+    d.drawRoundRect(panel.x + 3, panel.y + 4, panel.w, panel.h, 16, {
+      fill: '#17130f', alpha: 0.25,
+    });
+    d.drawRoundRect(panel.x, panel.y, panel.w, panel.h, 16, {
+      fill: '#3e3326', stroke: '#c9a878', lineWidth: 2,
+    });
+    d.drawRoundRect(panel.x + 6, panel.y + 6, panel.w - 12, panel.h - 12, 12, {
+      fill: '#f7edd9', stroke: '#d8bc8c', lineWidth: 1,
+    });
+
+    if (!this.selectedCropId) {
+      d.drawText('🌱 Select a Seed Packet Above', panel.x + 32, panel.y + 58, {
+        font: 'bold 20px monospace',
+        fill: '#463219',
+        align: 'left',
+        baseline: 'middle',
+      });
+      d.drawText(
+        'Click any seed packet in the shop above to inspect its details, then click PURCHASE.',
+        panel.x + 32,
+        panel.y + 98,
+        {
+          font: '14px monospace',
+          fill: '#786246',
+          align: 'left',
+          baseline: 'middle',
+        },
+      );
+
+      // Disabled Purchase Button
+      d.drawRoundRect(buyBtn.x, buyBtn.y, buyBtn.w, buyBtn.h, 12, {
+        fill: '#d5c6ad',
+        stroke: '#a89476',
+        lineWidth: 2,
+      });
+      d.drawText('SELECT ITEM', buyBtn.x + buyBtn.w / 2, buyBtn.y + buyBtn.h / 2, {
+        font: 'bold 15px monospace',
+        fill: '#6e5c44',
+        align: 'center',
+        baseline: 'middle',
+      });
+      return;
+    }
+
+    const crop = getCropDef(this.selectedCropId);
+    const coins = this.world?.coins ?? 0;
+    const owned = this.world?.seeds[crop.id] ?? 0;
+    const canAfford = coins >= crop.buyPrice;
+    const btnHovered = canAfford && this.isInRect(mx, my, buyBtn.x, buyBtn.y, buyBtn.w, buyBtn.h);
+
+    // Left seed packet preview box
+    const previewX = panel.x + 20;
+    const previewY = panel.y + 18;
+    const previewW = 100;
+    const previewH = 124;
+    d.drawRoundRect(previewX, previewY, previewW, previewH, 10, {
+      fill: '#ecdec3',
+      stroke: '#cbb289',
+      lineWidth: 1.5,
+    });
+    drawSeedPacket(crop, previewX + 12, previewY + 10, 76, 104);
+
+    // Crop title & owned count pill
+    const infoX = previewX + previewW + 22;
+    d.drawText(`${crop.seasonIcon} ${crop.seedName}`, infoX, panel.y + 34, {
+      font: 'bold 20px monospace',
+      fill: '#3e2d19',
+      align: 'left',
+      baseline: 'middle',
+    });
+
+    const pouchText = `In Pouch: ×${owned}`;
+    const pouchFont = 'bold 12px monospace';
+    const pouchW = d.measureText(pouchText, { font: pouchFont }).width + 20;
+    const titleW = d.measureText(`${crop.seasonIcon} ${crop.seedName}`, { font: 'bold 20px monospace' }).width;
+    const pouchX = infoX + titleW + 16;
+    d.drawRoundRect(pouchX, panel.y + 21, pouchW, 25, 7, {
+      fill: '#dfead2',
+      stroke: '#799962',
+      lineWidth: 1.5,
+    });
+    d.drawText(pouchText, pouchX + pouchW / 2, panel.y + 33.5, {
+      font: pouchFont,
+      fill: '#3a5e2c',
+      align: 'center',
+      baseline: 'middle',
+    });
+
+    // Description
+    d.drawText(crop.description, infoX, panel.y + 66, {
+      font: '13px monospace',
+      fill: '#6b563e',
+      align: 'left',
+      baseline: 'middle',
+    });
+
+    // Stats row
+    const profit = crop.sellPrice - crop.buyPrice;
+    const statsLine = `⏱ Growth: ${formatGrowthTime(crop.growthMinutes)}   ·   🪙 Price: ${crop.buyPrice} Coins   ·   📦 Harvest Value: ${crop.sellPrice} Coins (+${profit} profit)`;
+    d.drawText(statsLine, infoX, panel.y + 98, {
+      font: 'bold 13px monospace',
+      fill: '#513f29',
+      align: 'left',
+      baseline: 'middle',
+    });
+
+    // Affordability / action line
+    const statusLine = canAfford
+      ? '✓ Click PURCHASE on the right to buy 1 seed packet'
+      : `⚠ Need ${crop.buyPrice - coins} more Coins — sell harvested crops at the shipping bin [V]`;
+    d.drawText(statusLine, infoX, panel.y + 128, {
+      font: 'bold 12px monospace',
+      fill: canAfford ? '#3f6a34' : '#9c4b34',
+      align: 'left',
+      baseline: 'middle',
+    });
+
+    // Purchase Button on the right
+    d.drawRoundRect(buyBtn.x + 2, buyBtn.y + 3, buyBtn.w, buyBtn.h, 12, {
+      fill: '#17130f',
+      alpha: 0.22,
+    });
+    d.drawRoundRect(buyBtn.x, buyBtn.y, buyBtn.w, buyBtn.h, 12, {
+      fill: canAfford ? (btnHovered ? '#7a965e' : '#69834f') : '#b89c86',
+      stroke: canAfford ? (btnHovered ? '#f2d38a' : '#4a5e36') : '#8c6d56',
+      lineWidth: 2,
+    });
+    d.drawText(
+      canAfford ? 'PURCHASE' : 'NOT ENOUGH GOLD',
+      buyBtn.x + buyBtn.w / 2,
+      buyBtn.y + 21,
+      {
+        font: canAfford ? 'bold 16px monospace' : 'bold 13px monospace',
+        fill: '#fff8e7',
+        align: 'center',
+        baseline: 'middle',
+      },
+    );
+    d.drawText(
+      `${crop.buyPrice} Coins`,
+      buyBtn.x + buyBtn.w / 2,
+      buyBtn.y + 41,
+      {
+        font: 'bold 12px monospace',
+        fill: canAfford ? '#e5f0d8' : '#f2ded0',
+        align: 'center',
+        baseline: 'middle',
+      },
+    );
   }
 
   private drawPageButton(x: number, y: number, label: string, enabled: boolean, hovered: boolean): void {

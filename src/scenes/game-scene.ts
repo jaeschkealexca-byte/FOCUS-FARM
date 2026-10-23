@@ -404,26 +404,6 @@ export class GameScene extends BaseScene {
       return;
     }
 
-    // While inside the shop, show pending harvest value or shopping hint
-    const pendingValue = this.world.totalProduceValue;
-    const pillText = pendingValue > 0 ? `+${pendingValue}g in bag` : 'Click seed';
-    const pillFont = 'bold 11px monospace';
-    const pillW = Math.max(76, d.measureText(pillText, { font: pillFont }).width + 18);
-    const pillH = 26;
-    const pillX = x + w - pillW - 12;
-    const pillY = y + (h - pillH) / 2;
-
-    d.drawRoundRect(pillX, pillY, pillW, pillH, 8, {
-      fill: pendingValue > 0 ? '#dfead2' : '#efe1c3',
-      stroke: pendingValue > 0 ? '#799962' : '#c9ae82',
-      lineWidth: 1.5,
-    });
-    d.drawText(pillText, pillX + pillW / 2, pillY + pillH / 2, {
-      font: pillFont,
-      fill: pendingValue > 0 ? '#3a5e2c' : '#6b5335',
-      align: 'center',
-      baseline: 'middle',
-    });
   }
 
   private drawRetroCoinIcon(originX: number, originY: number, pixelSize: number): void {
