@@ -13,9 +13,8 @@ interface OwnedSeedStack {
 }
 
 /**
- * Interactive Seed Pouch & Quick-Select Tray rendered above the bottom toolbar.
- * Lets players inspect owned seeds, see growth/value stats, and switch seeds
- * with a single click, mouse wheel scroll, or [Q] / [2] keys.
+ * Interactive Seed Pouch & Quick-Select Tray rendered between the farm and the bottom toolbar.
+ * Positioned strictly below the farm screen (y >= 914) so it never overlaps farm tiles.
  */
 export class SeedSelector {
   private world: FarmWorld;
@@ -32,16 +31,16 @@ export class SeedSelector {
   private scrollIndex = 0;
   private readonly maxVisibleCards = 6;
 
-  // Geometry constants (1920x1080 space, positioned cleanly above the y=975 toolbar)
+  // Geometry constants (1920x1080 space: farm ends at y=910, toolbar starts at y=998)
   private readonly trayW = 820;
-  private readonly trayH = 122;
+  private readonly trayH = 80;
   private readonly trayX = (1920 - 820) / 2;
-  private readonly trayY = 834;
+  private readonly trayY = 914;
 
-  private readonly pillW = 360;
-  private readonly pillH = 34;
-  private readonly pillX = (1920 - 360) / 2;
-  private readonly pillY = 924;
+  private readonly pillW = 390;
+  private readonly pillH = 30;
+  private readonly pillX = (1920 - 390) / 2;
+  private readonly pillY = 962;
 
   constructor(
     world: FarmWorld,
@@ -131,7 +130,7 @@ export class SeedSelector {
 
     // Mouse wheel over expanded tray or toolbar cycles seeds when Seeds tool is active or tray is open
     const overTray = this.isExpanded && this.contains(mx, my, this.trayX, this.trayY, this.trayW, this.trayH);
-    const overToolbar = this.contains(mx, my, (1920 - 786) / 2, 964, 786, 92);
+    const overToolbar = this.contains(mx, my, (1920 - 786) / 2, 996, 786, 80);
     if ((overTray || (overToolbar && this.getTool() === 1)) && (input.isScrollingDown() || input.isScrollingUp())) {
       input.captureWheel();
       const dir = input.isScrollingDown() ? 1 : -1;
@@ -163,31 +162,31 @@ export class SeedSelector {
     }
 
     // Header buttons (Prev, Next, +Shop, Hide)
-    const headerY = this.trayY + 8;
-    const prevBtnX = this.trayX + this.trayW - 252;
-    const nextBtnX = this.trayX + this.trayW - 190;
+    const headerY = this.trayY + 6;
+    const prevBtnX = this.trayX + this.trayW - 248;
+    const nextBtnX = this.trayX + this.trayW - 188;
     const shopBtnX = this.trayX + this.trayW - 126;
     const hideBtnX = this.trayX + this.trayW - 44;
 
-    if (this.contains(mx, my, prevBtnX, headerY, 56, 24)) {
+    if (this.contains(mx, my, prevBtnX, headerY, 54, 19)) {
       this.world.cycleSelectedSeed(-1);
       this.setTool(1);
       this.ensureSelectedVisible();
       this.save();
       return true;
     }
-    if (this.contains(mx, my, nextBtnX, headerY, 56, 24)) {
+    if (this.contains(mx, my, nextBtnX, headerY, 54, 19)) {
       this.world.cycleSelectedSeed(1);
       this.setTool(1);
       this.ensureSelectedVisible();
       this.save();
       return true;
     }
-    if (this.contains(mx, my, shopBtnX, headerY, 76, 24)) {
+    if (this.contains(mx, my, shopBtnX, headerY, 76, 19)) {
       this.onOpenShop();
       return true;
     }
-    if (this.contains(mx, my, hideBtnX, headerY, 34, 24)) {
+    if (this.contains(mx, my, hideBtnX, headerY, 34, 19)) {
       this.togglePouch();
       return true;
     }
@@ -195,7 +194,7 @@ export class SeedSelector {
     const owned = this.getOwnedSeeds();
     if (owned.length === 0) {
       // Clicking empty state banner opens Seed Shop
-      if (this.contains(mx, my, this.trayX + 20, this.trayY + 40, this.trayW - 40, 72)) {
+      if (this.contains(mx, my, this.trayX + 16, this.trayY + 29, this.trayW - 32, 44)) {
         this.onOpenShop();
       }
       return true;
@@ -204,11 +203,11 @@ export class SeedSelector {
     // Left / Right page arrows if more than maxVisibleCards
     const maxScroll = Math.max(0, owned.length - this.maxVisibleCards);
     if (owned.length > this.maxVisibleCards) {
-      if (this.contains(mx, my, this.trayX + 8, this.trayY + 56, 24, 44) && this.scrollIndex > 0) {
+      if (this.contains(mx, my, this.trayX + 8, this.trayY + 32, 22, 40) && this.scrollIndex > 0) {
         this.scrollIndex--;
         return true;
       }
-      if (this.contains(mx, my, this.trayX + this.trayW - 32, this.trayY + 56, 24, 44) && this.scrollIndex < maxScroll) {
+      if (this.contains(mx, my, this.trayX + this.trayW - 30, this.trayY + 32, 22, 40) && this.scrollIndex < maxScroll) {
         this.scrollIndex++;
         return true;
       }
@@ -216,12 +215,12 @@ export class SeedSelector {
 
     // Seed cards
     const visible = owned.slice(this.scrollIndex, this.scrollIndex + this.maxVisibleCards);
-    const cardW = 120;
-    const cardH = 74;
+    const cardW = 122;
+    const cardH = 44;
     const gap = 8;
     const totalRowW = visible.length * cardW + Math.max(0, visible.length - 1) * gap;
     const startX = this.trayX + (this.trayW - totalRowW) / 2;
-    const cardY = this.trayY + 40;
+    const cardY = this.trayY + 29;
 
     for (let i = 0; i < visible.length; i++) {
       const cx = startX + i * (cardW + gap);
@@ -256,46 +255,46 @@ export class SeedSelector {
     const selectedCount = this.world.seeds[selectedCrop.id] ?? 0;
 
     // Drop shadow & stitched wooden/parchment tray container
-    d.drawRoundRect(this.trayX + 4, this.trayY + 6, this.trayW, this.trayH, 16, {
+    d.drawRoundRect(this.trayX + 3, this.trayY + 4, this.trayW, this.trayH, 14, {
       fill: '#17130f',
-      alpha: 0.32,
+      alpha: 0.3,
     });
-    d.drawRoundRect(this.trayX, this.trayY, this.trayW, this.trayH, 16, {
+    d.drawRoundRect(this.trayX, this.trayY, this.trayW, this.trayH, 14, {
       fill: '#463829',
       alpha: 0.95,
       stroke: '#c9a878',
       lineWidth: 2,
     });
-    d.drawRoundRect(this.trayX + 5, this.trayY + 5, this.trayW - 10, this.trayH - 10, 12, {
+    d.drawRoundRect(this.trayX + 4, this.trayY + 4, this.trayW - 8, this.trayH - 8, 10, {
       fill: '#f5ead4',
       stroke: '#cbb089',
       lineWidth: 1,
     });
 
     // Top header strip inside tray
-    d.drawRoundRect(this.trayX + 8, this.trayY + 7, this.trayW - 16, 26, 8, {
+    d.drawRoundRect(this.trayX + 7, this.trayY + 5, this.trayW - 14, 21, 6, {
       fill: '#e6d5b8',
     });
 
-    const headerCenterY = this.trayY + 20;
-    d.drawText('🌱 SEED POUCH', this.trayX + 18, headerCenterY, {
-      font: 'bold 12px monospace',
+    const headerCenterY = this.trayY + 15.5;
+    d.drawText('🌱 SEED POUCH', this.trayX + 16, headerCenterY, {
+      font: 'bold 11px monospace',
       fill: '#5c4730',
       align: 'left',
       baseline: 'middle',
     });
 
     if (owned.length > 0) {
-      const infoText = `${selectedCrop.seasonIcon} ${selectedCrop.name}  ·  ⏱ ${formatGrowthTime(selectedCrop.growthMinutes)} focus  ·  🪙 Ships for ${selectedCrop.sellPrice}  ·  In pouch: ×${selectedCount}`;
-      d.drawText(infoText, this.trayX + 138, headerCenterY, {
-        font: 'bold 12px monospace',
+      const infoText = `${selectedCrop.seasonIcon} ${selectedCrop.name} · ⏱ ${formatGrowthTime(selectedCrop.growthMinutes)} · 🪙 Ships ${selectedCrop.sellPrice} · ×${selectedCount}`;
+      d.drawText(infoText, this.trayX + 128, headerCenterY, {
+        font: 'bold 11px monospace',
         fill: '#3f5a36',
         align: 'left',
         baseline: 'middle',
       });
     } else {
-      d.drawText('No seeds in pouch — buy seeds from the Seed Shop [B]', this.trayX + 138, headerCenterY, {
-        font: '12px monospace',
+      d.drawText('Empty pouch — open Seed Shop [B] to buy seeds', this.trayX + 128, headerCenterY, {
+        font: '11px monospace',
         fill: '#8c4a3b',
         align: 'left',
         baseline: 'middle',
@@ -303,27 +302,27 @@ export class SeedSelector {
     }
 
     // Header mini control buttons
-    const headerBtnY = this.trayY + 8;
-    const prevBtnX = this.trayX + this.trayW - 252;
-    const nextBtnX = this.trayX + this.trayW - 190;
+    const headerBtnY = this.trayY + 6;
+    const prevBtnX = this.trayX + this.trayW - 248;
+    const nextBtnX = this.trayX + this.trayW - 188;
     const shopBtnX = this.trayX + this.trayW - 126;
     const hideBtnX = this.trayX + this.trayW - 44;
 
-    this.drawHeaderChip(d, prevBtnX, headerBtnY, 56, 24, '◀ Prev', owned.length > 1, this.contains(mx, my, prevBtnX, headerBtnY, 56, 24));
-    this.drawHeaderChip(d, nextBtnX, headerBtnY, 56, 24, 'Next ▶', owned.length > 1, this.contains(mx, my, nextBtnX, headerBtnY, 56, 24));
-    this.drawHeaderChip(d, shopBtnX, headerBtnY, 76, 24, '+ Shop [B]', true, this.contains(mx, my, shopBtnX, headerBtnY, 76, 24), true);
-    this.drawHeaderChip(d, hideBtnX, headerBtnY, 34, 24, '▾', true, this.contains(mx, my, hideBtnX, headerBtnY, 34, 24));
+    this.drawHeaderChip(d, prevBtnX, headerBtnY, 54, 19, '◀ Prev', owned.length > 1, this.contains(mx, my, prevBtnX, headerBtnY, 54, 19));
+    this.drawHeaderChip(d, nextBtnX, headerBtnY, 54, 19, 'Next ▶', owned.length > 1, this.contains(mx, my, nextBtnX, headerBtnY, 54, 19));
+    this.drawHeaderChip(d, shopBtnX, headerBtnY, 76, 19, '+ Shop [B]', true, this.contains(mx, my, shopBtnX, headerBtnY, 76, 19), true);
+    this.drawHeaderChip(d, hideBtnX, headerBtnY, 34, 19, '▾', true, this.contains(mx, my, hideBtnX, headerBtnY, 34, 19));
 
     // Empty state
     if (owned.length === 0) {
-      const emptyHover = this.contains(mx, my, this.trayX + 20, this.trayY + 40, this.trayW - 40, 72);
-      d.drawRoundRect(this.trayX + 20, this.trayY + 40, this.trayW - 40, 72, 10, {
+      const emptyHover = this.contains(mx, my, this.trayX + 16, this.trayY + 29, this.trayW - 32, 44);
+      d.drawRoundRect(this.trayX + 16, this.trayY + 29, this.trayW - 32, 44, 8, {
         fill: emptyHover ? '#eef4e5' : '#fbf4e4',
         stroke: emptyHover ? '#6f9259' : '#d8c3a0',
         lineWidth: 1.5,
       });
-      d.drawText('🌸 Your seed pouch is empty! Click here or press [B] to open the Seed Shop.', this.trayX + this.trayW / 2, this.trayY + 76, {
-        font: 'bold 14px monospace',
+      d.drawText('🌸 Your seed pouch is empty! Click here or press [B] to open the Seed Shop.', this.trayX + this.trayW / 2, this.trayY + 51, {
+        font: 'bold 12px monospace',
         fill: '#4c663b',
         align: 'center',
         baseline: 'middle',
@@ -333,12 +332,12 @@ export class SeedSelector {
 
     // Seed cards row
     const visible = owned.slice(this.scrollIndex, this.scrollIndex + this.maxVisibleCards);
-    const cardW = 120;
-    const cardH = 74;
+    const cardW = 122;
+    const cardH = 44;
     const gap = 8;
     const totalRowW = visible.length * cardW + Math.max(0, visible.length - 1) * gap;
     const startX = this.trayX + (this.trayW - totalRowW) / 2;
-    const cardY = this.trayY + 40;
+    const cardY = this.trayY + 29;
 
     for (let i = 0; i < visible.length; i++) {
       const { crop, count } = visible[i];
@@ -346,38 +345,38 @@ export class SeedSelector {
       const isSelected = crop.id === this.world.selectedSeedId;
       const isHovered = this.contains(mx, my, cx, cardY, cardW, cardH);
 
-      d.drawRoundRect(cx, cardY, cardW, cardH, 10, {
+      d.drawRoundRect(cx, cardY, cardW, cardH, 8, {
         fill: isSelected ? '#dfecc8' : isHovered ? '#fdf8ec' : '#faf0dc',
         stroke: isSelected ? '#557d3e' : isHovered ? '#b88b58' : '#d9c5a3',
-        lineWidth: isSelected ? 2.5 : 1.5,
+        lineWidth: isSelected ? 2 : 1.5,
       });
 
       // Seed packet icon on left side of card
-      drawSeedPacket(crop, cx + 6, cardY + 7, 42, 56);
+      drawSeedPacket(crop, cx + 6, cardY + 4, 30, 36);
 
       // Crop title & metadata on right side of card
-      const labelX = cx + 52;
-      const shortName = crop.name.length > 9 ? `${crop.name.slice(0, 8)}…` : crop.name;
-      d.drawText(shortName, labelX, cardY + 20, {
-        font: 'bold 12px monospace',
+      const labelX = cx + 41;
+      const shortName = crop.name.length > 8 ? `${crop.name.slice(0, 7)}…` : crop.name;
+      d.drawText(shortName, labelX, cardY + 14, {
+        font: 'bold 11px monospace',
         fill: isSelected ? '#2e4722' : '#4f3d2a',
         align: 'left',
         baseline: 'middle',
       });
 
-      d.drawText(`⏱ ${formatGrowthTime(crop.growthMinutes)}`, labelX, cardY + 38, {
-        font: '11px monospace',
+      d.drawText(`⏱${formatGrowthTime(crop.growthMinutes)}`, labelX, cardY + 31, {
+        font: '10px monospace',
         fill: '#6e5c46',
         align: 'left',
         baseline: 'middle',
       });
 
-      // Quantity pill
-      d.drawRoundRect(labelX, cardY + 49, 38, 17, 5, {
+      // Quantity pill in bottom-right of card
+      d.drawRoundRect(cx + cardW - 34, cardY + 23, 29, 16, 4, {
         fill: isSelected ? '#4c7a39' : '#856e54',
       });
-      d.drawText(`×${count}`, labelX + 19, cardY + 57.5, {
-        font: 'bold 11px monospace',
+      d.drawText(`×${count}`, cx + cardW - 19.5, cardY + 31, {
+        font: 'bold 10px monospace',
         fill: '#ffffff',
         align: 'center',
         baseline: 'middle',
@@ -385,13 +384,13 @@ export class SeedSelector {
 
       // Active checkmark badge in top-right corner
       if (isSelected) {
-        d.drawCircle(cx + cardW - 11, cardY + 11, 8, {
+        d.drawCircle(cx + cardW - 10, cardY + 10, 7, {
           fill: '#4c7a39',
           stroke: '#ffffff',
-          lineWidth: 1.5,
+          lineWidth: 1,
         });
-        d.drawText('✓', cx + cardW - 11, cardY + 11.5, {
-          font: 'bold 10px monospace',
+        d.drawText('✓', cx + cardW - 10, cardY + 10.5, {
+          font: 'bold 9px monospace',
           fill: '#ffffff',
           align: 'center',
           baseline: 'middle',
@@ -404,25 +403,25 @@ export class SeedSelector {
     if (owned.length > this.maxVisibleCards) {
       const canLeft = this.scrollIndex > 0;
       const canRight = this.scrollIndex < maxScroll;
-      d.drawRoundRect(this.trayX + 8, this.trayY + 56, 24, 44, 6, {
+      d.drawRoundRect(this.trayX + 8, this.trayY + 32, 22, 40, 6, {
         fill: canLeft ? '#e5d4b7' : '#efe6d5',
         stroke: '#bca380',
         lineWidth: 1,
       });
-      d.drawText('‹', this.trayX + 20, this.trayY + 78, {
-        font: 'bold 18px serif',
+      d.drawText('‹', this.trayX + 19, this.trayY + 52, {
+        font: 'bold 16px monospace',
         fill: canLeft ? '#59432d' : '#b5a48b',
         align: 'center',
         baseline: 'middle',
       });
 
-      d.drawRoundRect(this.trayX + this.trayW - 32, this.trayY + 56, 24, 44, 6, {
+      d.drawRoundRect(this.trayX + this.trayW - 30, this.trayY + 32, 22, 40, 6, {
         fill: canRight ? '#e5d4b7' : '#efe6d5',
         stroke: '#bca380',
         lineWidth: 1,
       });
-      d.drawText('›', this.trayX + this.trayW - 20, this.trayY + 78, {
-        font: 'bold 18px serif',
+      d.drawText('›', this.trayX + this.trayW - 19, this.trayY + 52, {
+        font: 'bold 16px monospace',
         fill: canRight ? '#59432d' : '#b5a48b',
         align: 'center',
         baseline: 'middle',
@@ -435,18 +434,18 @@ export class SeedSelector {
     const crop = getCropDef(this.world.selectedSeedId);
     const count = this.world.seeds[crop.id] ?? 0;
 
-    d.drawRoundRect(this.pillX + 2, this.pillY + 3, this.pillW, this.pillH, 17, {
+    d.drawRoundRect(this.pillX + 2, this.pillY + 3, this.pillW, this.pillH, 15, {
       fill: '#17130f',
       alpha: 0.25,
     });
-    d.drawRoundRect(this.pillX, this.pillY, this.pillW, this.pillH, 17, {
+    d.drawRoundRect(this.pillX, this.pillY, this.pillW, this.pillH, 15, {
       fill: hovered ? '#f6e7c4' : '#ead8b6',
       stroke: hovered ? '#72945b' : '#b89b72',
       lineWidth: 1.5,
     });
 
     const label = count > 0
-      ? `🌱 Active Seed: ${crop.name} (×${count})  ·  [Q] Cycle  ·  ▴ Open Pouch`
+      ? `🌱 Seed: ${crop.name} (×${count})  ·  [Q] Cycle  ·  ▴ Open Pouch`
       : `🌱 Seed Pouch Empty  ·  Click to open or press [B] for Shop`;
     d.drawText(label, this.pillX + this.pillW / 2, this.pillY + this.pillH / 2, {
       font: 'bold 11px monospace',
@@ -475,7 +474,7 @@ export class SeedSelector {
     const stroke = !enabled ? '#cbbca4' : accent ? '#4d6b3c' : '#b89f7a';
     const textFill = !enabled ? '#9e8f79' : accent ? '#fff9eb' : '#59432d';
 
-    d.drawRoundRect(x, y, w, h, 6, { fill, stroke, lineWidth: 1 });
+    d.drawRoundRect(x, y, w, h, 5, { fill, stroke, lineWidth: 1 });
     d.drawText(label, x + w / 2, y + h / 2, {
       font: 'bold 10px monospace',
       fill: textFill,
@@ -488,4 +487,3 @@ export class SeedSelector {
     return x >= left && x <= left + width && y >= top && y <= top + height;
   }
 }
-

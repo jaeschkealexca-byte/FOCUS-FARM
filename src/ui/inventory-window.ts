@@ -165,13 +165,13 @@ export class InventoryWindow {
     const my = input.mouseY;
 
     const x = (1920 - 760) / 2;
-    const y = 975;
-    d.drawRoundRect(x - 15, y - 9, 790, 92, 18, { fill: '#17130f', alpha: 0.3 });
-    d.drawRoundRect(x - 13, y - 11, 786, 92, 18, { fill: '#3e3326', alpha: 0.92, stroke: '#c9a878', lineWidth: 2 });
+    const y = 1003;
+    d.drawRoundRect(x - 15, y - 5, 790, 78, 16, { fill: '#17130f', alpha: 0.3 });
+    d.drawRoundRect(x - 13, y - 7, 786, 78, 16, { fill: '#3e3326', alpha: 0.94, stroke: '#c9a878', lineWidth: 2 });
 
     // Subtle divider between built-in tools (1-4) and quick-access slots (5-8)
     const dividerX = x + 4 * 95 - 5.5;
-    d.drawLine(dividerX, y + 6, dividerX, y + 64, { stroke: '#7a6348', lineWidth: 2 });
+    d.drawLine(dividerX, y + 4, dividerX, y + 60, { stroke: '#7a6348', lineWidth: 2 });
 
     const hoveredSlot = this.toolbarSlotAt(mx, my);
 
@@ -181,31 +181,31 @@ export class InventoryWindow {
       const active = slot < 4 ? this.getTool() === slot : this.selectedStackMatches(this.toolbarEntry(slot - 4));
       const hovered = hoveredSlot === slot;
 
-      d.drawRoundRect(sx, sy, 84, 70, 10, {
+      d.drawRoundRect(sx, sy, 84, 64, 10, {
         fill: active ? '#f6e4b8' : hovered ? '#eee0be' : '#e3d0aa',
         stroke: active ? '#b87538' : hovered ? '#c79252' : '#aa8a60',
         lineWidth: active ? 3 : 1.5,
       });
-      d.drawRoundRect(sx + 5, sy + 5, 74, 60, 7, { fill: active ? '#fff6df' : hovered ? '#faf1dc' : '#f4ead3' });
-      d.drawText(String(slot + 1), sx + 10, sy + 9, { font: 'bold 11px monospace', fill: '#6c5034', align: 'left', baseline: 'top' });
+      d.drawRoundRect(sx + 4, sy + 4, 76, 56, 7, { fill: active ? '#fff6df' : hovered ? '#faf1dc' : '#f4ead3' });
+      d.drawText(String(slot + 1), sx + 9, sy + 8, { font: 'bold 11px monospace', fill: '#6c5034', align: 'left', baseline: 'top' });
 
       if (slot === 1) {
         // Live Selected Seed preview inside Slot [2]
         const crop = getCropDef(this.world.selectedSeedId);
         const count = this.world.seeds[crop.id] ?? 0;
-        drawSeedPacket(crop, sx + 26, sy + 8, 32, 38);
+        drawSeedPacket(crop, sx + 27, sy + 6, 30, 36);
         const shortName = crop.name.length > 9 ? `${crop.name.slice(0, 8)}…` : crop.name;
-        d.drawText(shortName, sx + 42, sy + 56, {
+        d.drawText(shortName, sx + 42, sy + 51, {
           font: 'bold 10px monospace',
           fill: active ? '#3f5a36' : '#59432d',
           align: 'center',
           baseline: 'middle',
         });
         // Owned count badge in top-right of slot 2
-        d.drawRoundRect(sx + 52, sy + 7, 26, 15, 4, {
+        d.drawRoundRect(sx + 52, sy + 6, 26, 14, 4, {
           fill: count > 0 ? '#4c7a39' : '#a75e49',
         });
-        d.drawText(`×${count}`, sx + 65, sy + 14.5, {
+        d.drawText(`×${count}`, sx + 65, sy + 13, {
           font: 'bold 10px monospace',
           fill: '#ffffff',
           align: 'center',
@@ -213,16 +213,16 @@ export class InventoryWindow {
         });
       } else if (slot < 4) {
         const icons = ['⚒', '🌱', '💧', '✦'];
-        d.drawText(icons[slot], sx + 42, sy + 28, { font: '25px serif', fill: '#5c7547', align: 'center', baseline: 'middle' });
-        d.drawText(['Hoe', 'Seeds', 'Water', 'Harvest'][slot], sx + 42, sy + 55, { font: '11px monospace', fill: '#59432d', align: 'center', baseline: 'middle' });
+        d.drawText(icons[slot], sx + 42, sy + 25, { font: '22px monospace', fill: '#5c7547', align: 'center', baseline: 'middle' });
+        d.drawText(['Hoe', 'Seeds', 'Water', 'Harvest'][slot], sx + 42, sy + 50, { font: 'bold 10px monospace', fill: '#59432d', align: 'center', baseline: 'middle' });
       } else {
         const stack = this.toolbarEntry(slot - 4);
-        if (stack) this.drawStackIcon(stack, sx + 42, sy + 30, 30);
-        else d.drawText('·', sx + 42, sy + 34, { font: '24px serif', fill: '#b7a68a', align: 'center', baseline: 'middle' });
+        if (stack) this.drawStackIcon(stack, sx + 42, sy + 27, 28);
+        else d.drawText('·', sx + 42, sy + 32, { font: '22px monospace', fill: '#b7a68a', align: 'center', baseline: 'middle' });
         if (stack) {
           const shortLabel = stack.id ? getCropDef(stack.id).name.slice(0, 7) : '';
-          d.drawText(shortLabel, sx + 10, sy + 56, { font: '10px monospace', fill: '#6c5034', align: 'left', baseline: 'middle' });
-          d.drawText(`×${stack.count}`, sx + 74, sy + 56, { font: 'bold 11px monospace', fill: '#4c663b', align: 'right', baseline: 'middle' });
+          d.drawText(shortLabel, sx + 9, sy + 51, { font: '10px monospace', fill: '#6c5034', align: 'left', baseline: 'middle' });
+          d.drawText(`×${stack.count}`, sx + 75, sy + 51, { font: 'bold 10px monospace', fill: '#4c663b', align: 'right', baseline: 'middle' });
         }
       }
     }
@@ -505,8 +505,8 @@ export class InventoryWindow {
 
   private toolbarSlotAt(mx: number, my: number): number {
     const x = (1920 - 760) / 2;
-    const y = 975;
-    if (my < y || my > y + 70) return -1;
+    const y = 1003;
+    if (my < y || my > y + 64) return -1;
     const slot = Math.floor((mx - x) / 95);
     if (slot < 0 || slot > 7 || mx > x + slot * 95 + 84) return -1;
     return slot;

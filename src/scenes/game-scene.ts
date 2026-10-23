@@ -23,14 +23,14 @@ export class GameScene extends BaseScene {
   private tool = 0;
   private shop = new ShopWindow();
   private focus = new FocusWindow();
-  private openFocus = new Button({ label: '⏱ FOCUS & TASKS [F]', anchor: 'top-right', margin: 36, width: 280, height: 50, size: 'md' });
-  private openShop = new Button({ label: '🌸 SEED SHOP [B]', anchor: 'top-right', margin: 36, y: 58, width: 280, height: 50, size: 'md' });
-  private openBackpack = new Button({ label: '🎒 MY BACKPACK [I]', anchor: 'top-right', margin: 36, y: 116, width: 280, height: 50, size: 'md' });
-  private zoomIn = new Button({ label: '＋ Zoom', anchor: 'top-right', margin: 36, x: -146, y: 174, width: 134, height: 42, size: 'sm' });
-  private zoomOut = new Button({ label: '－ Zoom', anchor: 'top-right', margin: 36, y: 174, width: 134, height: 42, size: 'sm' });
-  private calendarText = new Text({ text: '', size: 'sm', color: 'accent' });
-  private calendarDate = new Text({ text: '', size: 'sm', color: 'muted' });
-  private hemisphereButton = new Button({ label: '', height: 38, size: 'sm', variant: 'ghost' });
+  private openFocus = new Button({ label: '⏱ FOCUS & TASKS [F]', anchor: 'top-right', margin: 24, width: 312, height: 48, size: 'md' });
+  private openShop = new Button({ label: '🌸 SEED SHOP [B]', anchor: 'top-right', margin: 24, y: 56, width: 312, height: 48, size: 'md' });
+  private openBackpack = new Button({ label: '🎒 MY BACKPACK [I]', anchor: 'top-right', margin: 24, y: 112, width: 312, height: 48, size: 'md' });
+  private zoomIn = new Button({ label: '＋ ZOOM IN', anchor: 'top-right', margin: 24, x: -160, y: 168, width: 152, height: 40, size: 'sm' });
+  private zoomOut = new Button({ label: '－ ZOOM OUT', anchor: 'top-right', margin: 24, y: 168, width: 152, height: 40, size: 'sm' });
+  private calendarText = new Text({ text: '', size: 'sm', color: 'accent', bold: true });
+  private calendarDate = new Text({ text: '', size: 'sm', color: 'text' });
+  private hemisphereButton = new Button({ label: '', height: 34, size: 'sm', variant: 'ghost' });
   private inventoryWindow: InventoryWindow | null = null;
   private seedSelector: SeedSelector | null = null;
 
@@ -55,9 +55,9 @@ export class GameScene extends BaseScene {
       () => this.persist(),
       () => this.shop.open(this.world, () => this.persist()),
     );
-    this.ui.add(new Panel({ anchor: 'top-left', margin: 36, width: 310, padding: 16, gap: 10, children: [
+    this.ui.add(new Panel({ anchor: 'top-left', margin: 24, width: 316, padding: 16, gap: 10, children: [
       this.calendarText, this.calendarDate, this.hemisphereButton,
-      new Text({ text: 'Local time • real calendar', size: 'sm', color: 'muted' }),
+      new Text({ text: 'Local time • real calendar', size: 'xs', color: 'muted' }),
     ] }));
     this.ui.add(this.openFocus);
     this.ui.add(this.openShop);
@@ -155,12 +155,7 @@ export class GameScene extends BaseScene {
     }
 
     if (this.tool === 3 && i.isMousePressed(0)) {
-      const centerX = this.world.originX + this.world.width * 32;
-      const centerY = this.world.originY + this.world.height * 32;
-      const worldX = centerX + (i.mouseX - centerX) / this.world.zoom;
-      const worldY = centerY + (i.mouseY - centerY) / this.world.zoom;
-      const gridX = Math.floor((worldX - this.world.originX) / 64);
-      const gridY = Math.floor((worldY - this.world.originY) / 64);
+      const { gridX, gridY } = this.world.screenToGrid(i.mouseX, i.mouseY);
       const plot = this.world.plotAt(gridX, gridY);
       if (plot?.planted && this.world.useTool(this.tool, plot)) this.persist();
     }
@@ -329,8 +324,8 @@ export class GameScene extends BaseScene {
   private renderCoinHud(): void {
     const display = MakkoEngine.display;
     const asset = MakkoEngine.staticAsset('ui_window_coins');
-    const rightMargin = 36;
-    const y = 268;
+    const rightMargin = 24;
+    const y = 244;
 
     if (!asset || !asset.image.complete || asset.image.naturalWidth <= 0 || asset.image.naturalHeight <= 0) {
       // Cozy fallback coin badge while image asset loads

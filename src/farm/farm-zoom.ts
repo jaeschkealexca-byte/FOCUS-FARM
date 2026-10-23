@@ -4,10 +4,20 @@ type DrawStyle = Parameters<IDisplay['drawRect']>[4];
 type TextStyle = Parameters<IDisplay['drawText']>[3];
 type ImageStyle = Parameters<IDisplay['drawImage']>[5];
 
-/** Creates a drawing surface that zooms farm artwork around the farm center. */
-export function createFarmZoomDisplay(display: IDisplay, zoom: number, centerX: number, centerY: number): IDisplay {
-  const projectX = (x: number): number => centerX + (x - centerX) * zoom;
-  const projectY = (y: number): number => centerY + (y - centerY) * zoom;
+/**
+ * Creates a drawing surface that zooms farm artwork around a camera target
+ * `(cameraX, cameraY)` in world space and projects it to `(centerX, centerY)` on screen.
+ */
+export function createFarmZoomDisplay(
+  display: IDisplay,
+  zoom: number,
+  centerX: number,
+  centerY: number,
+  cameraX = centerX,
+  cameraY = centerY,
+): IDisplay {
+  const projectX = (x: number): number => centerX + (x - cameraX) * zoom;
+  const projectY = (y: number): number => centerY + (y - cameraY) * zoom;
   const scaleStyle = (style?: DrawStyle): DrawStyle | undefined =>
     style?.lineWidth === undefined ? style : { ...style, lineWidth: style.lineWidth * zoom };
 

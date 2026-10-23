@@ -14,17 +14,26 @@ export class StartScene extends BaseScene {
 
   init(): void {
     Object.assign(UI_THEME, {
-      background: '#101219', surface: '#26382f', surfaceHover: '#354a3b',
-      border: '#53634a', borderLight: '#809272', text: '#f4ead1',
-      textMuted: '#b7c3a1', textDim: '#82947c', primary: '#96b57c',
-      accent: '#efd091', xp: '#9cc385',
+      background: '#101219',
+      surface: '#3e3326',
+      surfaceHover: '#524332',
+      border: '#c9a878',
+      borderLight: '#e3c79c',
+      text: '#fff8e7',
+      textMuted: '#d8c7a8',
+      textDim: '#9e8b6e',
+      primary: '#69834f',
+      primaryHover: '#7a965e',
+      primaryActive: '#587041',
+      accent: '#f2d38a',
+      xp: '#9cc385',
     });
-    UI_THEME.font.family = 'Georgia, serif';
-    UI_THEME.font.sizeSm = 16;
-    UI_THEME.font.sizeMd = 20;
-    UI_THEME.font.sizeLg = 24;
-    UI_THEME.font.sizeXl = 34;
-    UI_THEME.font.size2xl = 48;
+    UI_THEME.font.family = 'monospace';
+    UI_THEME.font.sizeSm = 14;
+    UI_THEME.font.sizeMd = 16;
+    UI_THEME.font.sizeLg = 20;
+    UI_THEME.font.sizeXl = 30;
+    UI_THEME.font.size2xl = 44;
     this.menu.addItem({ label: 'Enter your farm', action: () => this.switchTo('game') });
     this.ui.add(new Text({ text: 'Q U I E T   A C R E S', size: '2xl', color: 'accent', anchor: 'center', y: -160 }));
     this.ui.add(new Text({ text: 'A little care. A little focus. Something good grows.', size: 'lg', anchor: 'center', y: -85, color: 'muted' }));

@@ -32,7 +32,7 @@ import { type UIContainerOptions, type UIDirection, UIContainer } from './ui-lay
 export type ButtonVariant = 'primary' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
-const BUTTON_HEIGHTS: Record<ButtonSize, number> = { sm: 28, md: 36, lg: 48 };
+const BUTTON_HEIGHTS: Record<ButtonSize, number> = { sm: 32, md: 42, lg: 50 };
 const BUTTON_FONTS: Record<ButtonSize, TextSize> = { sm: 'sm', md: 'md', lg: 'lg' };
 const BUTTON_MIN_WIDTH = 80;
 
@@ -71,7 +71,7 @@ export class Button extends UIWidget {
   }
 
   protected measureWidth(): number {
-    const w = measureTextWidth(this.label, fontFor(BUTTON_FONTS[this.size])) + UI_THEME.spacing.lg * 2;
+    const w = measureTextWidth(this.label, fontFor(BUTTON_FONTS[this.size], true)) + UI_THEME.spacing.lg * 2;
     return Math.max(BUTTON_MIN_WIDTH, w);
   }
 
@@ -109,40 +109,131 @@ export class Button extends UIWidget {
 
   protected draw(): void {
     const display = MakkoEngine.display;
-    const { bg, text: textColor, stroke } = this.getColors();
     const w = this.getWidth();
     const h = this.getHeight();
+    const shiftY = this.disabled ? 0 : this.isPressed ? 1.5 : this.isHovered ? -1 : 0;
+    const bx = this.x;
+    const by = this.y + shiftY;
+    const font = fontFor(BUTTON_FONTS[this.size], true);
 
-    display.drawRoundRect(this.x, this.y, w, h, UI_THEME.radius.md, {
-      fill: bg,
-      ...(stroke ? { stroke, lineWidth: 1 } : {}),
+    if (this.variant === 'ghost') {
+      display.drawRoundRect(bx, by, w, h, 8, {
+        fill: this.isPressed ? '#614f3c' : this.isHovered ? '#524332' : '#47392a',
+        stroke: this.isHovered ? '#e3c79c' : '#b89b72',
+        lineWidth: 1.5,
+      });
+      display.drawText(this.label, bx + w / 2, by + h / 2, {
+        font,
+        fill: this.disabled ? UI_THEME.textDim : '#f5ead4',
+        align: 'center',
+        baseline: 'middle',
+      });
+      return;
+    }
+
+    // Soft drop shadow
+    if (!this.isPressed) {
+      display.drawRoundRect(this.x + 2, this.y + 3, w, h, 12, {
+        fill: '#17130f',
+        alpha: 0.28,
+      });
+    }
+
+    const { outerFill, outerStroke, innerFill, innerStroke, textColor, badgeFill, badgeText } = this.getFarmButtonStyle();
+
+    // Outer wooden/leather frame
+    display.drawRoundRect(bx, by, w, h, 12, {
+      fill: outerFill,
+      stroke: outerStroke,
+      lineWidth: 2,
     });
 
-    display.drawText(this.label, this.x + w / 2, this.y + h / 2, {
-      font: fontFor(BUTTON_FONTS[this.size]),
-      fill: textColor,
-      align: 'center',
-      baseline: 'middle',
+    // Inner parchment/sage plaque face
+    const inset = 4;
+    display.drawRoundRect(bx + inset, by + inset, w - inset * 2, h - inset * 2, 8, {
+      fill: innerFill,
+      stroke: innerStroke,
+      lineWidth: 1,
     });
+
+    // Check if the label ends with a keyboard shortcut badge like "[F]", "[B]", "[I]"
+    const keyMatch = /^(.+?)\s*\[([^\]]+)\]$/.exec(this.label);
+    if (keyMatch) {
+      const mainLabel = keyMatch[1].trim();
+      const keyLabel = keyMatch[2].trim();
+      const badgeW = Math.max(26, measureTextWidth(keyLabel, fontFor('xs', true)) + 14);
+      const badgeH = Math.min(24, h - 14);
+      const badgeX = bx + w - inset - badgeW - 8;
+      const badgeY = by + (h - badgeH) / 2;
+
+      display.drawText(mainLabel, bx + inset + 12, by + h / 2, {
+        font,
+        fill: textColor,
+        align: 'left',
+        baseline: 'middle',
+      });
+
+      display.drawRoundRect(badgeX, badgeY, badgeW, badgeH, 6, {
+        fill: badgeFill,
+        stroke: outerStroke,
+        lineWidth: 1,
+      });
+      display.drawText(keyLabel, badgeX + badgeW / 2, badgeY + badgeH / 2 + 0.5, {
+        font: fontFor('xs', true),
+        fill: badgeText,
+        align: 'center',
+        baseline: 'middle',
+      });
+    } else {
+      display.drawText(this.label, bx + w / 2, by + h / 2, {
+        font,
+        fill: textColor,
+        align: 'center',
+        baseline: 'middle',
+      });
+    }
   }
 
-  private getColors(): { bg: string; text: string; stroke?: string } {
+  private getFarmButtonStyle(): {
+    outerFill: string;
+    outerStroke: string;
+    innerFill: string;
+    innerStroke: string;
+    textColor: string;
+    badgeFill: string;
+    badgeText: string;
+  } {
     if (this.disabled) {
-      return { bg: UI_THEME.surface, text: UI_THEME.textDim, stroke: UI_THEME.border };
-    }
-    if (this.variant === 'ghost') {
-      if (this.isPressed) return { bg: 'rgba(255, 255, 255, 0.1)', text: UI_THEME.text, stroke: UI_THEME.borderLight };
-      if (this.isHovered) return { bg: 'rgba(255, 255, 255, 0.06)', text: UI_THEME.text, stroke: UI_THEME.borderLight };
-      return { bg: 'transparent', text: UI_THEME.textMuted, stroke: UI_THEME.border };
+      return {
+        outerFill: '#6e6253',
+        outerStroke: '#9c8e7b',
+        innerFill: '#ded2bd',
+        innerStroke: '#cbbda8',
+        textColor: '#8d8170',
+        badgeFill: '#c5b8a2',
+        badgeText: '#7a6f5f',
+      };
     }
     if (this.variant === 'danger') {
-      if (this.isPressed) return { bg: '#991b1b', text: UI_THEME.text };
-      if (this.isHovered) return { bg: '#b91c1c', text: UI_THEME.text };
-      return { bg: '#dc2626', text: UI_THEME.text };
+      return {
+        outerFill: '#5c2822',
+        outerStroke: this.isHovered ? '#e69583' : '#b85c4b',
+        innerFill: this.isPressed ? '#943c31' : this.isHovered ? '#bf5648' : '#a7493c',
+        innerStroke: '#d47a6a',
+        textColor: '#fff8e7',
+        badgeFill: '#6e2820',
+        badgeText: '#fff8e7',
+      };
     }
-    if (this.isPressed) return { bg: UI_THEME.primaryActive, text: UI_THEME.text };
-    if (this.isHovered) return { bg: UI_THEME.primaryHover, text: UI_THEME.text };
-    return { bg: UI_THEME.primary, text: UI_THEME.text };
+    return {
+      outerFill: '#463829',
+      outerStroke: this.isHovered ? '#e0b872' : '#c9a878',
+      innerFill: this.isPressed ? '#e8d7b9' : this.isHovered ? '#fffaf0' : '#f7edd9',
+      innerStroke: this.isHovered ? '#c49e68' : '#d5be99',
+      textColor: this.isHovered ? '#2f4527' : '#463625',
+      badgeFill: this.isHovered ? '#557a44' : '#69834f',
+      badgeText: '#fff8e7',
+    };
   }
 }
 
@@ -370,10 +461,16 @@ export class Panel extends UIContainer {
 
   protected drawBackground(): void {
     const display = MakkoEngine.display;
-    display.drawRoundRect(this.x, this.y, this.getWidth(), this.getHeight(), this.radius, {
+    const w = this.getWidth();
+    const h = this.getHeight();
+    display.drawRoundRect(this.x + 2, this.y + 3, w, h, this.radius, {
+      fill: '#17130f',
+      alpha: 0.28,
+    });
+    display.drawRoundRect(this.x, this.y, w, h, this.radius, {
       fill: this.background,
       stroke: this.borderColor,
-      lineWidth: 1,
+      lineWidth: 2,
     });
     if (this.title) {
       display.drawText(this.title, this.x + this.padding, this.y + this.padding, {

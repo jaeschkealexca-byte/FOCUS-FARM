@@ -365,22 +365,64 @@ export class FarmWorld {
     this.message = `Lovely work! ${minutes} focused minutes completed; ${grown} crops grew. Rewater for the next block.`;
   }
 
+  getCameraCenter(): { x: number; y: number } {
+    const centerX = this.originX + this.width * 32;
+    const centerY = this.originY + this.height * 32;
+    if (this.zoom <= 1) {
+      return { x: centerX, y: centerY };
+    }
+
+    const playerX = this.originX + this.player.gridX * 64 + 32;
+    const playerY = this.originY + this.player.gridY * 64 + 32;
+    const halfVisibleW = (this.width * 32) / this.zoom;
+    const halfVisibleH = (this.height * 32) / this.zoom;
+    const minX = this.originX + halfVisibleW;
+    const maxX = this.originX + this.width * 64 - halfVisibleW;
+    const minY = this.originY + halfVisibleH;
+    const maxY = this.originY + this.height * 64 - halfVisibleH;
+
+    return {
+      x: Math.max(minX, Math.min(maxX, playerX)),
+      y: Math.max(minY, Math.min(maxY, playerY)),
+    };
+  }
+
+  screenToGrid(screenX: number, screenY: number): { gridX: number; gridY: number } {
+    if (
+      screenX < this.originX ||
+      screenX >= this.originX + this.width * 64 ||
+      screenY < this.originY ||
+      screenY >= this.originY + this.height * 64
+    ) {
+      return { gridX: -1, gridY: -1 };
+    }
+    const centerX = this.originX + this.width * 32;
+    const centerY = this.originY + this.height * 32;
+    const camera = this.getCameraCenter();
+    const worldX = camera.x + (screenX - centerX) / this.zoom;
+    const worldY = camera.y + (screenY - centerY) / this.zoom;
+    return {
+      gridX: Math.floor((worldX - this.originX) / 64),
+      gridY: Math.floor((worldY - this.originY) / 64),
+    };
+  }
+
   render(): void {
     const display = MakkoEngine.display;
     const centerX = this.originX + this.width * 32;
     const centerY = this.originY + this.height * 32;
-    const zoomDisplay = createFarmZoomDisplay(display, this.zoom, centerX, centerY);
+    const camera = this.getCameraCenter();
+    const zoomDisplay = createFarmZoomDisplay(display, this.zoom, centerX, centerY, camera.x, camera.y);
+    display.pushClipRect(this.originX - 18, this.originY - 18, 1188, 676);
     this.renderFarm(zoomDisplay);
-    this.renderCropHover(display, centerX, centerY);
+    display.popClip();
+    this.renderCropHover(display);
   }
 
-  private renderCropHover(display: IDisplay, centerX: number, centerY: number): void {
+  private renderCropHover(display: IDisplay): void {
     const mouseX = MakkoEngine.input.mouseX;
     const mouseY = MakkoEngine.input.mouseY;
-    const worldX = centerX + (mouseX - centerX) / this.zoom;
-    const worldY = centerY + (mouseY - centerY) / this.zoom;
-    const gridX = Math.floor((worldX - this.originX) / 64);
-    const gridY = Math.floor((worldY - this.originY) / 64);
+    const { gridX, gridY } = this.screenToGrid(mouseX, mouseY);
     const plot = this.plotAt(gridX, gridY);
     if (!plot?.planted) return;
 
@@ -532,8 +574,9 @@ export class FarmWorld {
 
     const centerX = ox + this.width * 32;
     const centerY = oy + this.height * 32;
-    const clipX = centerX + (ox - centerX) * this.zoom;
-    const clipY = centerY + (oy - centerY) * this.zoom;
+    const camera = this.getCameraCenter();
+    const clipX = centerX + (ox - camera.x) * this.zoom;
+    const clipY = centerY + (oy - camera.y) * this.zoom;
     d.pushClipRect(clipX, clipY, this.width * 64 * this.zoom, this.height * 64 * this.zoom);
 
     for (let y = 0; y < this.height; y++) {

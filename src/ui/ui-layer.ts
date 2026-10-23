@@ -37,33 +37,33 @@ import { MakkoEngine } from '@makko/engine';
  */
 export const UI_THEME = {
   // Backgrounds
-  background: '#111827',
-  surface: '#1f2937',
-  surfaceHover: '#374151',
+  background: '#101219',
+  surface: '#3e3326',
+  surfaceHover: '#524332',
 
   // Borders
-  border: '#374151',
-  borderLight: '#4b5563',
+  border: '#c9a878',
+  borderLight: '#e3c79c',
 
   // Text
-  text: '#f9fafb',
-  textMuted: '#9ca3af',
-  textDim: '#6b7280',
+  text: '#fff8e7',
+  textMuted: '#d8c7a8',
+  textDim: '#9e8b6e',
 
   // Primary (buttons, highlights)
-  primary: '#3b82f6',
-  primaryHover: '#2563eb',
-  primaryActive: '#1d4ed8',
+  primary: '#69834f',
+  primaryHover: '#7a965e',
+  primaryActive: '#587041',
 
   // Accent (selection highlight in menus/lists)
-  accent: '#fbbf24',
+  accent: '#f2d38a',
 
   // Status bars (semantic colors)
   health: '#22c55e',
   healthLow: '#ef4444',
   mana: '#3b82f6',
   stamina: '#eab308',
-  xp: '#a855f7',
+  xp: '#9cc385',
 
   // Semantic feedback colors
   damage: '#ef4444',
@@ -72,13 +72,13 @@ export const UI_THEME = {
 
   // Font
   font: {
-    family: 'system-ui, -apple-system, sans-serif',
-    sizeXs: 10,
-    sizeSm: 12,
-    sizeMd: 14,
+    family: 'monospace',
+    sizeXs: 11,
+    sizeSm: 13,
+    sizeMd: 15,
     sizeLg: 18,
     sizeXl: 24,
-    size2xl: 32,
+    size2xl: 36,
   },
 
   // Spacing
@@ -92,9 +92,9 @@ export const UI_THEME = {
 
   // Border radius
   radius: {
-    sm: 4,
-    md: 6,
-    lg: 8,
+    sm: 6,
+    md: 10,
+    lg: 14,
     full: 9999,
   },
 };
