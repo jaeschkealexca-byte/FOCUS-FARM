@@ -1,0 +1,434 @@
+{
+  "version": "1.2",
+  "referenceId": null,
+  "anchor": "bottom-center",
+  "entries": {
+    "static:potato_s1": {
+      "key": "potato_s1",
+      "source": "static",
+      "longSidePx": 26,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:potato_s2": {
+      "key": "potato_s2",
+      "source": "static",
+      "longSidePx": 26,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:potato_s3": {
+      "key": "potato_s3",
+      "source": "static",
+      "longSidePx": 92,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:potato_s4": {
+      "key": "potato_s4",
+      "source": "static",
+      "longSidePx": 92,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:carrot_1": {
+      "key": "carrot_1",
+      "source": "static",
+      "longSidePx": 52,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:couliflower_1": {
+      "key": "couliflower_1",
+      "source": "static",
+      "longSidePx": 52,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:potatoe_1": {
+      "key": "potatoe_1",
+      "source": "static",
+      "longSidePx": 26,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:strawberry_1": {
+      "key": "strawberry_1",
+      "source": "static",
+      "longSidePx": 52,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:potato_s4_1": {
+      "key": "potato_s4_1",
+      "source": "static",
+      "longSidePx": 52,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:strawberries_s1": {
+      "key": "strawberries_s1",
+      "source": "static",
+      "longSidePx": 38,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:strawberries_s2": {
+      "key": "strawberries_s2",
+      "source": "static",
+      "longSidePx": 41,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:strawberries_s3": {
+      "key": "strawberries_s3",
+      "source": "static",
+      "longSidePx": 52,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:strawberries_s4": {
+      "key": "strawberries_s4",
+      "source": "static",
+      "longSidePx": 59,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:cauliflower_s2": {
+      "key": "cauliflower_s2",
+      "source": "static",
+      "longSidePx": 32,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:cauliflower_s3": {
+      "key": "cauliflower_s3",
+      "source": "static",
+      "longSidePx": 58,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:cauliflower_s4": {
+      "key": "cauliflower_s4",
+      "source": "static",
+      "longSidePx": 59,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:cauliflower_s1": {
+      "key": "cauliflower_s1",
+      "source": "static",
+      "longSidePx": 32,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:soil_tile_1": {
+      "key": "soil_tile_1",
+      "source": "static",
+      "longSidePx": 64,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:soil_tile_2": {
+      "key": "soil_tile_2",
+      "source": "static",
+      "longSidePx": 64,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:grass_tile_1": {
+      "key": "grass_tile_1",
+      "source": "static",
+      "longSidePx": 64,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:carrot_s1": {
+      "key": "carrot_s1",
+      "source": "static",
+      "longSidePx": 40,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:carrot_s2": {
+      "key": "carrot_s2",
+      "source": "static",
+      "longSidePx": 47,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:carrot_s3": {
+      "key": "carrot_s3",
+      "source": "static",
+      "longSidePx": 52,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:ui_focus_farm": {
+      "key": "ui_focus_farm",
+      "source": "static",
+      "longSidePx": 1824,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:ui_focus_tasklist_wide": {
+      "key": "ui_focus_tasklist_wide",
+      "source": "static",
+      "longSidePx": 172,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:ui_focus_timer_wide": {
+      "key": "ui_focus_timer_wide",
+      "source": "static",
+      "longSidePx": 210,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:ui_focus_task_icon": {
+      "key": "ui_focus_task_icon",
+      "source": "static",
+      "longSidePx": 40,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:ui_focus_shop_icon": {
+      "key": "ui_focus_shop_icon",
+      "source": "static",
+      "longSidePx": 40,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:ui_focus_restart_icon": {
+      "key": "ui_focus_restart_icon",
+      "source": "static",
+      "longSidePx": 40,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:ui_focus_play_icon": {
+      "key": "ui_focus_play_icon",
+      "source": "static",
+      "longSidePx": 40,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:ui_focus_house_button": {
+      "key": "ui_focus_house_button",
+      "source": "static",
+      "longSidePx": 40,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:ui_window_coins": {
+      "key": "ui_window_coins",
+      "source": "static",
+      "longSidePx": 224,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:ui_focus_1": {
+      "key": "ui_focus_1",
+      "source": "static",
+      "longSidePx": 1920,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:grass_1": {
+      "key": "grass_1",
+      "source": "static",
+      "longSidePx": 73,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:grass_2": {
+      "key": "grass_2",
+      "source": "static",
+      "longSidePx": 52,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:grass_3": {
+      "key": "grass_3",
+      "source": "static",
+      "longSidePx": 52,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:shop_ui": {
+      "key": "shop_ui",
+      "source": "static",
+      "longSidePx": 1375,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:cranberry_s1": {
+      "key": "cranberry_s1",
+      "source": "static",
+      "longSidePx": 52,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:cranberry_2": {
+      "key": "cranberry_2",
+      "source": "static",
+      "longSidePx": 51,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:cranberry_s3": {
+      "key": "cranberry_s3",
+      "source": "static",
+      "longSidePx": 51,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:cranberry_s4": {
+      "key": "cranberry_s4",
+      "source": "static",
+      "longSidePx": 51,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:beet_s1": {
+      "key": "beet_s1",
+      "source": "static",
+      "longSidePx": 52,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:beet_s2": {
+      "key": "beet_s2",
+      "source": "static",
+      "longSidePx": 52,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:beet_s3": {
+      "key": "beet_s3",
+      "source": "static",
+      "longSidePx": 51,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:beet_s4": {
+      "key": "beet_s4",
+      "source": "static",
+      "longSidePx": 52,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:broccoli_s1": {
+      "key": "broccoli_s1",
+      "source": "static",
+      "longSidePx": 52,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:broccoli_s2": {
+      "key": "broccoli_s2",
+      "source": "static",
+      "longSidePx": 51,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:broccoli_s3": {
+      "key": "broccoli_s3",
+      "source": "static",
+      "longSidePx": 51,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:broccoli_s4": {
+      "key": "broccoli_s4",
+      "source": "static",
+      "longSidePx": 51,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:parsnip_s1": {
+      "key": "parsnip_s1",
+      "source": "static",
+      "longSidePx": 52,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:parsnip_s2": {
+      "key": "parsnip_s2",
+      "source": "static",
+      "longSidePx": 55,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:parsnip_s3": {
+      "key": "parsnip_s3",
+      "source": "static",
+      "longSidePx": 52,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:parsnip_s4": {
+      "key": "parsnip_s4",
+      "source": "static",
+      "longSidePx": 52,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:leek_s1": {
+      "key": "leek_s1",
+      "source": "static",
+      "longSidePx": 30,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:leek_s2": {
+      "key": "leek_s2",
+      "source": "static",
+      "longSidePx": 34,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:leek_s3": {
+      "key": "leek_s3",
+      "source": "static",
+      "longSidePx": 46,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:leek_s4": {
+      "key": "leek_s4",
+      "source": "static",
+      "longSidePx": 50,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:spinach_s1": {
+      "key": "spinach_s1",
+      "source": "static",
+      "longSidePx": 30,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:spinach_s2": {
+      "key": "spinach_s2",
+      "source": "static",
+      "longSidePx": 39,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:spinach_s3": {
+      "key": "spinach_s3",
+      "source": "static",
+      "longSidePx": 49,
+      "anchor": "bottom-center",
+      "locked": false
+    },
+    "static:spinach_s4": {
+      "key": "spinach_s4",
+      "source": "static",
+      "longSidePx": 63,
+      "anchor": "bottom-center",
+      "locked": false
+    }
+  }
+}
