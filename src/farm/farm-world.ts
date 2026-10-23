@@ -394,7 +394,7 @@ export class FarmWorld {
 
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
-        this.plots[y * this.width + x].render(ox + x * 64, oy + y * 64, x, y, d);
+        this.plots[y * this.width + x].render(ox + x * 64, oy + y * 64, x, y, d, false);
       }
     }
     this.renderGrassDecorations(d, ox, oy);
@@ -403,7 +403,7 @@ export class FarmWorld {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
         const plot = this.plots[y * this.width + x];
-        if (plot?.tilled) plot.render(ox + x * 64, oy + y * 64, x, y, d);
+        if (plot?.tilled) plot.render(ox + x * 64, oy + y * 64, x, y, d, false);
       }
     }
 
@@ -439,6 +439,14 @@ export class FarmWorld {
     }
 
     this.player.render(ox, oy, d);
+
+    // Render planted crops last so they layer over the player and farm objects.
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        const plot = this.plots[y * this.width + x];
+        if (plot?.planted) plot.renderCropOverlay(ox + x * 64, oy + y * 64, d);
+      }
+    }
 
     if (calendar.nightAlpha > 0) {
       d.drawRect(ox, oy, 1152, 640, { fill: '#28324f', alpha: calendar.nightAlpha });

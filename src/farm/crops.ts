@@ -453,25 +453,9 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#f9a8c2',
     foliageColor: '#628a7e',
   },
-  dawnroot: {
-    id: 'dawnroot',
-    name: 'Dawnroot',
-    seedName: 'Dawnroot Seeds',
-    season: 'All',
-    buyPrice: 10,
-    sellPrice: 25,
-    growthMinutes: 1 / 6,
-    seasonIcon: '🌿',
-    seasonColor: '#538260',
-    description: 'A resilient, mystic golden tuber that thrives in any weather or season.',
-    primaryColor: '#f2ba6d',
-    accentColor: '#ffe19e',
-    foliageColor: '#7bbb68',
-  },
 };
 
 export const CROP_LIST: CropDef[] = [
-  CROPS.dawnroot,
   CROPS.garlic,
   CROPS.kale,
   CROPS.rhubarb,
@@ -500,8 +484,8 @@ export const CROP_LIST: CropDef[] = [
 ];
 
 export function getCropDef(id: string | null | undefined): CropDef {
-  if (!id) return CROPS.dawnroot;
-  return CROPS[id] ?? CROPS.dawnroot;
+  if (!id) return CROPS.carrot;
+  return CROPS[id] ?? CROPS.carrot;
 }
 
 export function formatGrowthTime(minutes: number): string {
@@ -800,13 +784,13 @@ export function drawCropEmblem(crop: CropDef, cx: number, cy: number): void {
       break;
     }
     default: {
-      // Dawnroot
-      d.drawRoundRect(cx - 6, cy - 4, 12, 16, 5, { fill: '#f2ba6d', stroke: '#c78f44', lineWidth: 1 });
-      d.drawCircle(cx - 2, cy, 3, { fill: '#ffe6a1' });
-      d.drawLine(cx, cy - 4, cx - 6, cy - 13, { stroke: '#7bbb68', lineWidth: 2 });
-      d.drawLine(cx, cy - 4, cx + 6, cy - 13, { stroke: '#9fd689', lineWidth: 2 });
-      // Magic sparkle
-      d.drawCircle(cx + 7, cy - 3, 2, { fill: '#fff0a3' });
+      // Generic crop emblem: a colored fruit/root framed by its own foliage.
+      d.drawLine(cx, cy + 2, cx, cy - 9, { stroke: crop.foliageColor, lineWidth: 2 });
+      d.drawEllipse(cx - 6, cy - 9, 5, 3, { fill: crop.foliageColor });
+      d.drawEllipse(cx + 6, cy - 9, 5, 3, { fill: crop.foliageColor });
+      d.drawEllipse(cx, cy - 12, 4, 3, { fill: crop.foliageColor });
+      d.drawEllipse(cx, cy + 5, 8, 10, { fill: crop.primaryColor, stroke: crop.foliageColor, lineWidth: 1 });
+      d.drawCircle(cx - 2, cy + 2, 2.5, { fill: crop.accentColor });
       break;
     }
   }

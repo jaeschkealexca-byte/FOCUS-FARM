@@ -62,7 +62,7 @@
     "static:potato_s4_1": {
       "key": "potato_s4_1",
       "source": "static",
-      "longSidePx": 52,
+      "longSidePx": 62,
       "anchor": "bottom-center",
       "locked": false
     },

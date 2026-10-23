@@ -1,10 +1,9 @@
-# Change: Enlarge broccoli stage 4
+# Change: Smaller Stage 3 Melon and Eggplant
 
-Increase the rendered display size of the managed `static:broccoli_s4` asset from its current 78 px long side to 88 px (default — interpret “1 size bigger” as a +10 px long-side increase; confirm or change). Preserve aspect ratio and bottom-center anchor. Keep broccoli stages 1–3 and all other crops unchanged. Apply this as an asset display-size adjustment, not a code scale multiplier.
+## Expected outcome
+The third growth-stage visuals (`*_s3`, stage index 2) for melon and eggplant render smaller. Reduce only those stage-3 height caps by about 20% (melon: 84px → 67px; eggplant: 76px → 61px) (default — confirm or change). Keep their other growth stages, crop positions, and all other crops unchanged.
 
 ## Build plan
-
-### Task 1 — Enlarge broccoli S4 asset
-- **What:** Use `resize_asset` to set `static:broccoli_s4` to an 88 px long side (from 78 px), preserving its aspect ratio and bottom-center anchor. Do not change crop rendering logic.
-- **Files:** MAKKO-managed sizing for `static:broccoli_s4`; no source files.
-- **Verify:** Confirm the asset's configured long side is 88 px, then view a mature broccoli crop in-game: stage 4 renders larger while stages 1–3 and other crops retain their current sizes.
+1. **What:** In `src/farm/crop-plot.ts`, change the stage-index-2 entries of `renderMelonStage()`'s `maxHeights` from 84 to 67 and `renderEggplantStage()`'s `maxHeights` from 76 to 61. Leave each neighboring stage cap and all other rendering code unchanged.
+   **Files:** `src/farm/crop-plot.ts`
+   **Verify:** In-game, grow or preview melon and eggplant at stages 2, 3, and 4: verify stage 3 is visibly smaller and remains bottom-aligned, while stages 2/4 and the sizes of other crops are unchanged.

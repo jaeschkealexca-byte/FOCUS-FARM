@@ -22,6 +22,7 @@ const SPINACH_GROWTH_ASSETS = ['spinach_s1', 'spinach_s2', 'spinach_s3', 'spinac
 const KALE_GROWTH_ASSETS = ['kale_s1', 'kale_s2', 'kale_s3', 'kale_s4'] as const;
 const RADISH_GROWTH_ASSETS = ['radish_s1', 'radish_s2', 'radish_s3', 'radish_s4'] as const;
 const GRAPE_GROWTH_ASSETS = ['grape_s1', 'grape_s2', 'grape_s3', 'grape_s4'] as const;
+const EGGPLANT_GROWTH_ASSETS = ['eggplant_s1', 'eggplant_s2', 'eggplant_s3', 'eggplant_s4'] as const;
 
 type CropDrawStyle = Parameters<IDisplay['drawRect']>[4];
 type CropImageStyle = Parameters<IDisplay['drawImage']>[5];
@@ -29,7 +30,7 @@ type CropTextStyle = Parameters<IDisplay['drawText']>[3];
 
 function createCropScaleDisplay(display: IDisplay, anchorX: number, anchorY: number, scale: number): IDisplay {
   const projectX = (x: number): number => anchorX + (x - anchorX) * scale;
-  const projectY = (y: number): number => anchorY + (y - anchorY) * scale;
+  const projectY = (y: number): number => anchorY + (y - anchorY) * scale - 12;
   const scaleStyle = (style?: CropDrawStyle): CropDrawStyle | undefined =>
     style?.lineWidth === undefined ? style : { ...style, lineWidth: style.lineWidth * scale };
 
@@ -101,7 +102,7 @@ export class CropPlot {
     return Math.min(100, Math.floor((this.growth / this.cropDef.growthMinutes) * 100));
   }
 
-  render(x: number, y: number, gridX: number, gridY: number, display: IDisplay = MakkoEngine.display): void {
+  render(x: number, y: number, gridX: number, gridY: number, display: IDisplay = MakkoEngine.display, renderCrop = true): void {
     const d = display;
     const palette = RealCalendar.shared.palette;
     const season = RealCalendar.shared.season;
@@ -147,7 +148,12 @@ export class CropPlot {
     }
     if (season === 'Winter') d.drawRect(x + 5, y + 4, 54, 5, { fill: '#edf4fa' });
 
+    if (renderCrop) this.renderCropOverlay(x, y, d);
+  }
+
+  renderCropOverlay(x: number, y: number, display: IDisplay = MakkoEngine.display): void {
     if (!this.planted) return;
+    const d = display;
 
     // Crop rendering by stage
     const def = this.cropDef;
@@ -158,7 +164,7 @@ export class CropPlot {
       : ratio >= 1 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.25 ? 1 : 0;
     const cx = x + 32;
     const cy = y + 34;
-    const cropDisplay = createCropScaleDisplay(d, cx, y + 62, 0.72);
+    const cropDisplay = createCropScaleDisplay(d, cx, y + 62, def.id === 'potato' || def.id === 'carrot' ? 0.9 : 0.72);
 
     if (def.id === 'potato') this.renderPotatoStage(cx, cy, stage, cropDisplay);
     else if (def.id === 'strawberry') this.renderStrawberryStage(cx, cy, stage, cropDisplay);
@@ -180,6 +186,7 @@ export class CropPlot {
     else if (def.id === 'kale') this.renderKaleStage(cx, y, stage, cropDisplay);
     else if (def.id === 'radish') this.renderRadishStage(cx, y, stage, cropDisplay);
     else if (def.id === 'grape') this.renderGrapeStage(cx, y, stage, cropDisplay);
+    else if (def.id === 'eggplant') this.renderEggplantStage(cx, y, stage, cropDisplay);
     else this.renderCropStage(cx, cy, def, stage, cropDisplay);
 
     // Water droplet indicator
@@ -284,11 +291,11 @@ export class CropPlot {
     const stageIndex = Math.min(MELON_GROWTH_ASSETS.length - 1, Math.max(0, stage));
     const asset = MakkoEngine.staticAsset(MELON_GROWTH_ASSETS[stageIndex]);
     if (asset?.image.complete && asset.image.naturalWidth > 0) {
-      const maxHeights = [24, 34, 46, 52] as const;
+      const maxHeights = [24, 48, 67, 94] as const;
       const height = maxHeights[stageIndex];
       const scale = height / asset.height;
       const width = asset.width * scale;
-      d.drawImage(asset.image, cx - width / 2, tileY + 58 - height, width, height);
+      d.drawImage(asset.image, cx - width / 2, tileY + 74 - height, width, height);
       return;
     }
     this.renderCropStage(cx, tileY + 34, this.cropDef, stage, d);
@@ -347,6 +354,20 @@ export class CropPlot {
       const width = asset.width * scale;
       const height = asset.height * scale;
       d.drawImage(asset.image, cx - width / 2, tileY + 58 - height, width, height);
+      return;
+    }
+    this.renderCropStage(cx, tileY + 34, this.cropDef, stage, d);
+  }
+
+  private renderEggplantStage(cx: number, tileY: number, stage: number, d: IDisplay): void {
+    const stageIndex = Math.min(EGGPLANT_GROWTH_ASSETS.length - 1, Math.max(0, stage));
+    const asset = MakkoEngine.staticAsset(EGGPLANT_GROWTH_ASSETS[stageIndex]);
+    if (asset?.image.complete && asset.image.naturalWidth > 0) {
+      const maxHeights = [24, 50, 61, 84] as const;
+      const scale = Math.min(90 / asset.width, maxHeights[stageIndex] / asset.height);
+      const width = asset.width * scale;
+      const height = asset.height * scale;
+      d.drawImage(asset.image, cx - width / 2, tileY + 62 - height, width, height);
       return;
     }
     this.renderCropStage(cx, tileY + 34, this.cropDef, stage, d);
@@ -846,13 +867,13 @@ export class CropPlot {
       }
 
       default: {
-        // Dawnroot: classic golden root
-        d.drawRoundRect(cx - 10, cy - 3, 20, 20, 6, { fill: '#f2ba6d', stroke: '#bf8637', lineWidth: 1.5 });
-        d.drawRect(cx - 6, cy + 2, 5, 10, { fill: '#ffdb91' });
-        d.drawRect(cx - 2, cy - 14, 4, 22, { fill: '#b3d279' });
-        d.drawPolygon([{ x: cx, y: cy - 2 }, { x: cx - 18, y: cy - 16 }, { x: cx - 7, y: cy - 18 }], { fill: '#7bbb68' });
-        d.drawPolygon([{ x: cx, y: cy - 4 }, { x: cx + 18, y: cy - 18 }, { x: cx + 7, y: cy - 18 }], { fill: '#b7d781' });
-        d.drawCircle(cx + 12, cy - 18, 3, { fill: '#ffe6a1' });
+        // Generic mature crop: a leafy plant with crop-specific fruit colors.
+        d.drawLine(cx, cy + 13, cx, cy - 10, { stroke: def.foliageColor, lineWidth: 3 });
+        d.drawEllipse(cx - 9, cy - 8, 7, 9, { fill: def.foliageColor });
+        d.drawEllipse(cx + 9, cy - 8, 7, 9, { fill: def.foliageColor });
+        d.drawEllipse(cx, cy - 14, 7, 8, { fill: def.foliageColor });
+        d.drawEllipse(cx, cy + 7, 9, 10, { fill: def.primaryColor, stroke: def.foliageColor, lineWidth: 1.5 });
+        d.drawCircle(cx - 3, cy + 3, 3, { fill: def.accentColor });
         break;
       }
     }
