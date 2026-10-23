@@ -17,6 +17,8 @@ const X := 46.0
 const Y := 236.0
 const WIDTH := 430.0
 const HEIGHT := 680.0
+const PAD_X := 25.0
+const CONTENT_W := WIDTH - PAD_X * 2.0 # 380.0
 const FILTERS := ["All", "Seeds", "Harvest", "Tools"]
 
 func _init(p_world: FarmWorldData, p_get_tool: Callable, p_set_tool: Callable, p_save: Callable) -> void:
@@ -61,20 +63,25 @@ func select_hotbar_slot(slot: int) -> bool:
 
 func handle_click(mx: float, my: float) -> bool:
 	if visible:
-		if _contains(mx, my, X + WIDTH - 54.0, Y + 25.0, 38.0, 34.0):
+		# Close button inside top-right of green header bar
+		if _contains(mx, my, X + WIDTH - 22.0 - 10.0 - 36.0, Y + 22.0 + 10.0, 36.0, 35.0):
 			close()
 			return true
-		if _contains(mx, my, X + 20.0, Y + 580.0, 120.0, 26.0):
+		# 3 action buttons (+ To Toolbar, - From Bar, Discard 1)
+		var btn_y: float = Y + 552.0
+		var btn_w: float = 120.0
+		var btn_h: float = 32.0
+		if _contains(mx, my, X + PAD_X, btn_y, btn_w, btn_h):
 			_add_selected_to_toolbar()
 			return true
-		if _contains(mx, my, X + 150.0, Y + 580.0, 120.0, 26.0):
+		if _contains(mx, my, X + PAD_X + 130.0, btn_y, btn_w, btn_h):
 			_remove_selected_from_toolbar()
 			return true
-		if _contains(mx, my, X + 280.0, Y + 580.0, 120.0, 26.0):
+		if _contains(mx, my, X + PAD_X + 260.0, btn_y, btn_w, btn_h):
 			_discard_selected_item()
 			return true
 
-		var tb_slot := _toolbar_slot_at(mx, my)
+		var tb_slot: int = _toolbar_slot_at(mx, my)
 		if tb_slot >= 0:
 			if tb_slot < 4:
 				select_hotbar_slot(tb_slot)
@@ -82,31 +89,44 @@ func handle_click(mx: float, my: float) -> bool:
 				_remove_from_toolbar(tb_slot - 4)
 			return true
 
+		# 4 filter tabs
+		var tab_w: float = 89.0
+		var tab_gap: float = 8.0
 		for i in range(FILTERS.size()):
-			var tab_x := X + 20.0 + float(i) * 97.0
-			if _contains(mx, my, tab_x, Y + 88.0, 91.0, 38.0):
+			var tab_x: float = X + PAD_X + float(i) * (tab_w + tab_gap)
+			if _contains(mx, my, tab_x, Y + 88.0, tab_w, 38.0):
 				filter = FILTERS[i]
 				page = 0
 				return true
 
-		var entries := _filtered_entries()
-		var page_count := maxi(1, int(ceil(float(entries.size()) / 6.0)))
+		# 2x3 item grid
+		var entries: Array[Dictionary] = _filtered_entries()
+		var page_count: int = maxi(1, int(ceil(float(entries.size()) / 6.0)))
 		page = mini(page, page_count - 1)
-		var shown := entries.slice(page * 6, page * 6 + 6)
+		var shown: Array[Dictionary] = entries.slice(page * 6, page * 6 + 6)
+		var card_w: float = 184.0
+		var card_h: float = 74.0
+		var card_gap_x: float = 12.0
+		var card_gap_y: float = 12.0
 		for i in range(shown.size()):
-			var col := i % 2
-			var row := int(i / 2)
-			var sx := X + 20.0 + float(col) * 192.0
-			var sy := Y + 151.0 + float(row) * 75.0
-			if _contains(mx, my, sx, sy, 185.0, 69.0):
+			var col: int = i % 2
+			var row: int = int(i / 2)
+			var sx: float = X + PAD_X + float(col) * (card_w + card_gap_x)
+			var sy: float = Y + 154.0 + float(row) * (card_h + card_gap_y)
+			if _contains(mx, my, sx, sy, card_w, card_h):
 				_select_entry(shown[i])
 				return true
 
-		var page_y := Y + 614.0
-		if _contains(mx, my, X + 284.0, page_y, 48.0, 30.0) and page > 0:
+		# Pagination buttons aligned inside CONTENT_W
+		var page_y: float = Y + 604.0
+		var nav_w: float = 42.0
+		var nav_h: float = 32.0
+		var prev_x: float = X + PAD_X + CONTENT_W - nav_w * 2.0 - 56.0
+		var next_x: float = X + PAD_X + CONTENT_W - nav_w
+		if _contains(mx, my, prev_x, page_y, nav_w, nav_h) and page > 0:
 			page -= 1
 			return true
-		if _contains(mx, my, X + 378.0, page_y, 48.0, 30.0) and page < page_count - 1:
+		if _contains(mx, my, next_x, page_y, nav_w, nav_h) and page < page_count - 1:
 			page += 1
 			return true
 		return _contains(mx, my, X, Y, WIDTH, HEIGHT)
@@ -175,82 +195,102 @@ func render_toolbar(d: DrawSurface, mx: float, my: float) -> void:
 func render_modal(d: DrawSurface, mx: float, my: float) -> void:
 	if not visible:
 		return
-	var entries := _filtered_entries()
-	var vis_entries := entries.slice(page * 6, page * 6 + 6)
-	var page_count := maxi(1, int(ceil(float(entries.size()) / 6.0)))
+	var entries: Array[Dictionary] = _filtered_entries()
+	var vis_entries: Array[Dictionary] = entries.slice(page * 6, page * 6 + 6)
+	var page_count: int = maxi(1, int(ceil(float(entries.size()) / 6.0)))
 
 	d.draw_round_rect(X + 8.0, Y + 10.0, WIDTH, HEIGHT, 24.0, {"fill": "#17130f", "alpha": 0.35})
 	d.draw_round_rect(X, Y, WIDTH, HEIGHT, 24.0, {"fill": "#79543a", "stroke": "#503722", "lineWidth": 4.0})
 	d.draw_round_rect(X + 8.0, Y + 8.0, WIDTH - 16.0, HEIGHT - 16.0, 19.0, {"fill": "#ead3ac", "stroke": "#bd9567", "lineWidth": 2.0})
 	d.draw_round_rect(X + 17.0, Y + 17.0, WIDTH - 34.0, HEIGHT - 34.0, 16.0, {"fill": "#fff5df"})
 	d.draw_round_rect(X + 22.0, Y + 22.0, WIDTH - 44.0, 55.0, 13.0, {"fill": "#719166"})
-	d.draw_text_styled("✿  MY BACKPACK", X + 38.0, Y + 49.0, {"size": 22, "fill": "#fff8e7", "align": "left", "baseline": "middle"})
+	d.draw_text_styled("✿  MY BACKPACK", X + 38.0, Y + 49.5, {"size": 22, "fill": "#fff8e7", "align": "left", "baseline": "middle"})
 
-	var close_hover := _contains(mx, my, X + WIDTH - 54.0, Y + 25.0, 38.0, 34.0)
-	d.draw_round_rect(X + WIDTH - 54.0, Y + 25.0, 38.0, 34.0, 9.0, {"fill": "#bf6b53" if close_hover else "#a75e49"})
-	d.draw_text_styled("×", X + WIDTH - 35.0, Y + 42.0, {"size": 20, "fill": "#fff8e7", "align": "center", "baseline": "middle"})
+	var close_x: float = X + WIDTH - 22.0 - 10.0 - 36.0
+	var close_y: float = Y + 22.0 + 10.0
+	var close_hover: bool = _contains(mx, my, close_x, close_y, 36.0, 35.0)
+	d.draw_round_rect(close_x, close_y, 36.0, 35.0, 9.0, {"fill": "#bf6b53" if close_hover else "#a75e49"})
+	d.draw_text_styled("×", close_x + 18.0, close_y + 17.5, {"size": 20, "fill": "#fff8e7", "align": "center", "baseline": "middle"})
 
+	var tab_w: float = 89.0
+	var tab_gap: float = 8.0
 	for i in range(FILTERS.size()):
 		var f: String = FILTERS[i]
-		var tx := X + 20.0 + float(i) * 97.0
-		var act := filter == f
-		var hov := _contains(mx, my, tx, Y + 88.0, 91.0, 38.0)
-		d.draw_round_rect(tx, Y + 88.0, 91.0, 38.0, 10.0, {
+		var tx: float = X + PAD_X + float(i) * (tab_w + tab_gap)
+		var act: bool = filter == f
+		var hov: bool = _contains(mx, my, tx, Y + 88.0, tab_w, 38.0)
+		d.draw_round_rect(tx, Y + 88.0, tab_w, 38.0, 10.0, {
 			"fill": "#829d70" if act else ("#f7edda" if hov else "#f2e5cc"),
 			"stroke": "#58744f" if act else ("#bda37c" if hov else "#d4c09e"),
 			"lineWidth": 1.5
 		})
-		d.draw_text_styled(f, tx + 45.0, Y + 107.0, {"size": 13, "fill": "#fff9e9" if act else "#67533b", "align": "center", "baseline": "middle"})
+		d.draw_text_styled(f, tx + tab_w * 0.5, Y + 107.0, {"size": 13, "fill": "#fff9e9" if act else "#67533b", "align": "center", "baseline": "middle"})
 
-	d.draw_text_styled("YOUR THINGS  (Click a seed to equip)", X + 24.0, Y + 140.0, {"size": 12, "fill": "#8b7151", "align": "left", "baseline": "middle"})
+	d.draw_text_styled("YOUR THINGS  (Click a seed to equip)", X + PAD_X + 2.0, Y + 141.0, {"size": 12, "fill": "#8b7151", "align": "left", "baseline": "middle"})
 
+	var card_w: float = 184.0
+	var card_h: float = 74.0
+	var card_gap_x: float = 12.0
+	var card_gap_y: float = 12.0
 	for i in range(6):
 		var entry: Dictionary = vis_entries[i] if i < vis_entries.size() else {}
-		var col := i % 2
-		var row := int(i / 2)
-		var sx := X + 20.0 + float(col) * 192.0
-		var sy := Y + 151.0 + float(row) * 75.0
-		var selected := not entry.is_empty() and selected_key == str(entry["key"])
-		var hovered := not entry.is_empty() and _contains(mx, my, sx, sy, 185.0, 69.0)
-		var is_eq := not entry.is_empty() and str(entry["kind"]) == "seed" and world.selected_seed_id == str(entry["id"])
+		var col: int = i % 2
+		var row: int = int(i / 2)
+		var sx: float = X + PAD_X + float(col) * (card_w + card_gap_x)
+		var sy: float = Y + 154.0 + float(row) * (card_h + card_gap_y)
+		var selected: bool = not entry.is_empty() and selected_key == str(entry["key"])
+		var hovered: bool = not entry.is_empty() and _contains(mx, my, sx, sy, card_w, card_h)
+		var is_eq: bool = not entry.is_empty() and str(entry["kind"]) == "seed" and world.selected_seed_id == str(entry["id"])
 
-		d.draw_round_rect(sx, sy, 185.0, 69.0, 11.0, {
+		d.draw_round_rect(sx, sy, card_w, card_h, 11.0, {
 			"fill": "#e4efcf" if selected else ("#fcf4e6" if hovered else "#f8edda"),
 			"stroke": "#779464" if selected else ("#8aa870" if is_eq else ("#cbb492" if hovered else "#dfcdae")),
 			"lineWidth": 2.5 if selected else (2.0 if is_eq else 1.0)
 		})
 		if entry.is_empty():
 			continue
-		_draw_stack_icon(d, entry, sx + 32.0, sy + 34.0, 36.0)
-		var dname := "%s…" % str(entry["name"]).substr(0, 13) if str(entry["name"]).length() > 14 else str(entry["name"])
-		d.draw_text_styled(dname, sx + 60.0, sy + 24.0, {"size": 13, "fill": "#513e2b", "align": "left", "baseline": "middle"})
-		var qty_str := "Farm tool" if str(entry["kind"]) == "tool" else "Quantity  ×%d" % int(entry["count"])
-		d.draw_text_styled(qty_str, sx + 60.0, sy + 44.0, {"size": 11, "fill": "#887359", "align": "left", "baseline": "middle"})
+		_draw_stack_icon(d, entry, sx + 32.0, sy + card_h * 0.5, 36.0)
+		var dname: String = "%s…" % str(entry["name"]).substr(0, 13) if str(entry["name"]).length() > 14 else str(entry["name"])
+		d.draw_text_styled(dname, sx + 60.0, sy + 26.0, {"size": 13, "fill": "#513e2b", "align": "left", "baseline": "middle"})
+		var qty_str: String = "Farm tool" if str(entry["kind"]) == "tool" else "Quantity  ×%d" % int(entry["count"])
+		d.draw_text_styled(qty_str, sx + 60.0, sy + 46.0, {"size": 11, "fill": "#887359", "align": "left", "baseline": "middle"})
 		if is_eq:
-			d.draw_round_rect(sx + 60.0, sy + 51.0, 66.0, 14.0, 4.0, {"fill": "#5c8248"})
-			d.draw_text_styled("✓ ACTIVE", sx + 93.0, sy + 58.0, {"size": 9, "fill": "#ffffff", "align": "center", "baseline": "middle"})
+			d.draw_round_rect(sx + 60.0, sy + 55.0, 66.0, 14.0, 4.0, {"fill": "#5c8248"})
+			d.draw_text_styled("✓ ACTIVE", sx + 93.0, sy + 62.0, {"size": 9, "fill": "#ffffff", "align": "center", "baseline": "middle"})
 
-	d.draw_round_rect(X + 20.0, Y + 455.0, WIDTH - 40.0, 116.0, 13.0, {"fill": "#f0e1c5", "stroke": "#d1b993", "lineWidth": 1.5})
-	d.draw_text_styled("A LITTLE ABOUT IT", X + 34.0, Y + 473.0, {"size": 12, "fill": "#8b7151", "align": "left", "baseline": "middle"})
-	var sel := _find_selected_entry(entries)
+	var info_y: float = Y + 420.0
+	var info_h: float = 118.0
+	d.draw_round_rect(X + PAD_X, info_y, CONTENT_W, info_h, 13.0, {"fill": "#f0e1c5", "stroke": "#d1b993", "lineWidth": 1.5})
+	d.draw_text_styled("A LITTLE ABOUT IT", X + PAD_X + 16.0, info_y + 20.0, {"size": 12, "fill": "#8b7151", "align": "left", "baseline": "middle"})
+	var sel: Dictionary = _find_selected_entry(entries)
 	if not sel.is_empty():
-		_draw_stack_icon(d, sel, X + 56.0, Y + 522.0, 40.0)
-		d.draw_text_styled(str(sel["name"]), X + 88.0, Y + 498.0, {"size": 16, "fill": "#4f5f3f", "align": "left", "baseline": "middle"})
-		d.draw_text_styled(str(sel["description"]).substr(0, 52), X + 88.0, Y + 524.0, {"size": 11, "fill": "#5b4834", "align": "left", "baseline": "middle"})
+		_draw_stack_icon(d, sel, X + PAD_X + 38.0, info_y + 72.0, 40.0)
+		d.draw_text_styled(str(sel["name"]), X + PAD_X + 72.0, info_y + 52.0, {"size": 16, "fill": "#4f5f3f", "align": "left", "baseline": "middle"})
+		var desc_str: String = "%s…" % str(sel["description"]).substr(0, 46) if str(sel["description"]).length() > 47 else str(sel["description"])
+		d.draw_text_styled(desc_str, X + PAD_X + 72.0, info_y + 80.0, {"size": 11, "fill": "#5b4834", "align": "left", "baseline": "middle"})
 	else:
-		d.draw_text_styled("Select an item above to inspect it.", X + 34.0, Y + 515.0, {"size": 12, "fill": "#8a755b", "align": "left", "baseline": "middle"})
+		d.draw_text_styled("Select an item above to inspect it.", X + PAD_X + 16.0, info_y + 64.0, {"size": 12, "fill": "#8a755b", "align": "left", "baseline": "middle"})
 
-	_draw_action_btn(d, X + 20.0, Y + 580.0, 120.0, 26.0, "+ To Toolbar", not sel.is_empty() and str(sel["kind"]) != "tool")
-	_draw_action_btn(d, X + 150.0, Y + 580.0, 120.0, 26.0, "- From Bar", not sel.is_empty() and _is_on_toolbar(str(sel["key"])))
-	_draw_action_btn(d, X + 280.0, Y + 580.0, 120.0, 26.0, "Discard 1", not sel.is_empty() and str(sel["kind"]) != "tool")
+	var btn_y: float = Y + 552.0
+	var btn_w: float = 120.0
+	var btn_h: float = 32.0
+	_draw_action_btn(d, X + PAD_X, btn_y, btn_w, btn_h, "+ To Toolbar", not sel.is_empty() and str(sel["kind"]) != "tool")
+	_draw_action_btn(d, X + PAD_X + 130.0, btn_y, btn_w, btn_h, "- From Bar", not sel.is_empty() and _is_on_toolbar(str(sel["key"])))
+	_draw_action_btn(d, X + PAD_X + 260.0, btn_y, btn_w, btn_h, "Discard 1", not sel.is_empty() and str(sel["kind"]) != "tool")
 
-	var py := Y + 614.0
-	d.draw_text_styled("Seeds ×%d · Harvest ×%d" % [world.total_seeds(), world.total_produce()], X + 22.0, py + 15.0, {
-		"size": 11, "fill": "#65513a", "align": "left", "baseline": "middle"
+	var py: float = Y + 604.0
+	var nav_w: float = 42.0
+	var nav_h: float = 32.0
+	var prev_x: float = X + PAD_X + CONTENT_W - nav_w * 2.0 - 56.0
+	var next_x: float = X + PAD_X + CONTENT_W - nav_w
+	var page_label_x: float = prev_x + nav_w + 28.0
+
+	d.draw_text_styled("Seeds ×%d · Harvest ×%d" % [world.total_seeds(), world.total_produce()], X + PAD_X + 2.0, py + nav_h * 0.5, {
+		"size": 12, "fill": "#65513a", "align": "left", "baseline": "middle"
 	})
-	_draw_action_btn(d, X + 284.0, py, 48.0, 30.0, "◀", page > 0)
-	d.draw_text_styled("%d/%d" % [page + 1, page_count], X + 355.0, py + 15.0, {"size": 12, "fill": "#65513a", "align": "center", "baseline": "middle"})
-	_draw_action_btn(d, X + 378.0, py, 48.0, 30.0, "▶", page < page_count - 1)
+	_draw_action_btn(d, prev_x, py, nav_w, nav_h, "◀", page > 0)
+	d.draw_text_styled("%d/%d" % [page + 1, page_count], page_label_x, py + nav_h * 0.5, {"size": 12, "fill": "#65513a", "align": "center", "baseline": "middle"})
+	_draw_action_btn(d, next_x, py, nav_w, nav_h, "▶", page < page_count - 1)
 
 func _draw_action_btn(d: DrawSurface, bx: float, by: float, bw: float, bh: float, label: String, enabled: bool) -> void:
 	d.draw_round_rect(bx, by, bw, bh, 7.0, {

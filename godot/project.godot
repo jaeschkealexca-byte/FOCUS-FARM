@@ -33,8 +33,6 @@ window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/size/mode=2
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep"
-window/dpi/allow_hidpi=true
 
 [gui]
 
@@ -43,5 +41,4 @@ theme/default_font_generate_mipmaps=true
 
 [rendering]
 
-textures/canvas_textures/default_texture_filter=1
 environment/defaults/default_clear_color=Color(0.0627451, 0.0705882, 0.0980392, 1)
