@@ -350,10 +350,21 @@ export class GameScene extends BaseScene {
   private renderCoinHud(): void {
     const d = MakkoEngine.display;
     const input = MakkoEngine.input;
-    const w = this.shop.visible ? 340 : 316;
-    const h = 52;
+    const balanceText = `${this.world.coins.toLocaleString()} Coins`;
+    const balanceFont = this.shop.visible ? 'bold 18px monospace' : 'bold 20px monospace';
+    const textWidth = Math.ceil(d.measureText(balanceText, { font: balanceFont }).width);
+
+    const coinScale = this.shop.visible ? 2.25 : 2.5;
+    const coinSize = Math.round(12 * coinScale);
+    const padLeft = this.shop.visible ? 14 : 16;
+    const gap = 10;
+    const padRight = 16;
+    const textXOffset = padLeft + coinSize + gap;
+
+    const w = this.shop.visible ? textXOffset + textWidth + padRight : 316;
+    const h = this.shop.visible ? 46 : 52;
     const x = this.shop.visible ? Math.round((d.width - w) / 2) : 24;
-    const y = this.shop.visible ? 40 : 171;
+    const y = this.shop.visible ? 42 : 171;
 
     // Outer wooden frame with drop shadow matching the farm UI panels
     d.drawRoundRect(x + 3, y + 4, w, h, 14, { fill: '#17130f', alpha: 0.28 });
@@ -371,12 +382,11 @@ export class GameScene extends BaseScene {
     });
 
     // Retro 12x12 pixel-art gold coin icon
-    this.drawRetroCoinIcon(x + 16, y + Math.round((h - 30) / 2), 2.5);
+    this.drawRetroCoinIcon(x + padLeft, y + Math.round((h - coinSize) / 2), coinScale);
 
     // Vertically centered gold balance
-    const balanceText = `${this.world.coins.toLocaleString()} Coins`;
-    d.drawText(balanceText, x + 56, y + h / 2, {
-      font: 'bold 20px monospace',
+    d.drawText(balanceText, x + textXOffset, y + h / 2, {
+      font: balanceFont,
       fill: '#463219',
       align: 'left',
       baseline: 'middle',
@@ -401,9 +411,7 @@ export class GameScene extends BaseScene {
         align: 'center',
         baseline: 'middle',
       });
-      return;
     }
-
   }
 
   private drawRetroCoinIcon(originX: number, originY: number, pixelSize: number): void {
