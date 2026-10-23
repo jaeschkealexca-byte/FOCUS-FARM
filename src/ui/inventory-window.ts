@@ -388,7 +388,18 @@ export class InventoryWindow {
   private drawStackIcon(entry: InventoryEntry, cx: number, cy: number, size: number): void {
     const crop = getCropDef(entry.id);
     if (entry.kind === 'seed') drawSeedPacket(crop, cx - size / 2, cy - size / 2, size, size, entry.count);
-    else if (entry.kind === 'produce') drawCropEmblem(crop, cx, cy);
+    else if (entry.kind === 'produce') {
+      const assetKey = crop.harvestAssetKey;
+      const asset = assetKey ? MakkoEngine.staticAsset(assetKey) : null;
+      if (asset?.image.complete && asset.image.naturalWidth > 0) {
+        const scale = Math.min(size / asset.width, size / asset.height);
+        const width = asset.width * scale;
+        const height = asset.height * scale;
+        MakkoEngine.display.drawImage(asset.image, cx - width / 2, cy - height / 2, width, height);
+      } else {
+        drawCropEmblem(crop, cx, cy);
+      }
+    }
     else {
       const icons = ['⚒', '🌱', '💧', '✦'];
       const toolIndex = entry.toolIndex ?? Number(entry.id);

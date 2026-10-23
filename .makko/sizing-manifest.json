@@ -265,7 +265,7 @@
     "static:cranberry_s1": {
       "key": "cranberry_s1",
       "source": "static",
-      "longSidePx": 52,
+      "longSidePx": 32,
       "anchor": "bottom-center",
       "locked": false
     },
@@ -279,14 +279,14 @@
     "static:cranberry_s3": {
       "key": "cranberry_s3",
       "source": "static",
-      "longSidePx": 51,
+      "longSidePx": 80,
       "anchor": "bottom-center",
       "locked": false
     },
     "static:cranberry_s4": {
       "key": "cranberry_s4",
       "source": "static",
-      "longSidePx": 51,
+      "longSidePx": 60,
       "anchor": "bottom-center",
       "locked": false
     },
@@ -321,7 +321,7 @@
     "static:broccoli_s1": {
       "key": "broccoli_s1",
       "source": "static",
-      "longSidePx": 52,
+      "longSidePx": 32,
       "anchor": "bottom-center",
       "locked": false
     },
@@ -335,21 +335,21 @@
     "static:broccoli_s3": {
       "key": "broccoli_s3",
       "source": "static",
-      "longSidePx": 51,
+      "longSidePx": 66,
       "anchor": "bottom-center",
       "locked": false
     },
     "static:broccoli_s4": {
       "key": "broccoli_s4",
       "source": "static",
-      "longSidePx": 51,
+      "longSidePx": 89,
       "anchor": "bottom-center",
       "locked": false
     },
     "static:parsnip_s1": {
       "key": "parsnip_s1",
       "source": "static",
-      "longSidePx": 52,
+      "longSidePx": 32,
       "anchor": "bottom-center",
       "locked": false
     },
@@ -419,14 +419,14 @@
     "static:spinach_s3": {
       "key": "spinach_s3",
       "source": "static",
-      "longSidePx": 49,
+      "longSidePx": 58,
       "anchor": "bottom-center",
       "locked": false
     },
     "static:spinach_s4": {
       "key": "spinach_s4",
       "source": "static",
-      "longSidePx": 63,
+      "longSidePx": 92,
       "anchor": "bottom-center",
       "locked": false
     }

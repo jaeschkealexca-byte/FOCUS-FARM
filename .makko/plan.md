@@ -1,12 +1,10 @@
-# Inventory and Toolbar Cleanup
+# Change: Enlarge broccoli stage 4
 
-## What’s changing
-- Add a clearly labeled **Delete stack** action to the backpack so the player can remove all of a selected seed or produce stack at once. Deleting the last seeds of a type clears any toolbar assignment for that stack and selects another owned seed if one remains. Built-in tools are permanent equipment and cannot be deleted (default — confirm or change).
-- Let the player move an assigned item out of the toolbar by unassigning its shortcut; the item remains in inventory (default — confirm or change). Reuse the existing **Remove from bar** action and click-an-assigned-toolbar-slot interaction rather than adding a separate drag-and-drop system.
-- Save changes and keep the selected item and toolbar display in sync.
-
-## Expected outcome
-Players can delete unwanted stacks and remove toolbar shortcuts without losing the corresponding inventory items. Deleting a stack is immediate, affects the whole stack, and has no confirmation dialog (default — confirm or change).
+Increase the rendered display size of the managed `static:broccoli_s4` asset from its current 78 px long side to 88 px (default — interpret “1 size bigger” as a +10 px long-side increase; confirm or change). Preserve aspect ratio and bottom-center anchor. Keep broccoli stages 1–3 and all other crops unchanged. Apply this as an asset display-size adjustment, not a code scale multiplier.
 
 ## Build plan
-1. **What:** In `InventoryWindow` (`src/ui/inventory-window.ts`), change the existing **Discard 1** button to **Delete stack** and update `discardSelectedItem()` to delete the selected seed/produce ID from its inventory record in one action. Reuse `removeSelectedFromToolbar()` and `removeFromToolbar()` for unassignment; retain both existing backpack controls. When a stack is deleted, clear every matching `world.toolbarSlots` entry, keep `selectedKey` on a remaining entry or clear it if none remain, and if the deleted seed was selected choose another owned seed when available. Call the existing save callback after each successful mutation; keep the delete action disabled for tool entries. **Files:** `src/ui/inventory-window.ts`. **Verify:** Delete a multi-count seed stack and a produce stack and confirm each whole stack disappears immediately; confirm tools cannot be deleted. Assign a stack to the toolbar, use **Remove from bar**, and separately click its assigned toolbar slot; in both cases confirm only the shortcut disappears and the stack remains in the backpack. Delete a stack assigned to multiple slots and confirm all matching slots clear. Confirm the remaining seed selection is valid when one remains, no invalid selection/shortcut remains when none do, and deletion/unassignment persist after closing and reopening the game.
+
+### Task 1 — Enlarge broccoli S4 asset
+- **What:** Use `resize_asset` to set `static:broccoli_s4` to an 88 px long side (from 78 px), preserving its aspect ratio and bottom-center anchor. Do not change crop rendering logic.
+- **Files:** MAKKO-managed sizing for `static:broccoli_s4`; no source files.
+- **Verify:** Confirm the asset's configured long side is 88 px, then view a mature broccoli crop in-game: stage 4 renders larger while stages 1–3 and other crops retain their current sizes.

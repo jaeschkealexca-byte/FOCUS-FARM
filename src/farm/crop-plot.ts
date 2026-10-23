@@ -21,6 +21,7 @@ const LEEK_GROWTH_ASSETS = ['leek_s1', 'leek_s2', 'leek_s3', 'leek_s4'] as const
 const SPINACH_GROWTH_ASSETS = ['spinach_s1', 'spinach_s2', 'spinach_s3', 'spinach_s4'] as const;
 const KALE_GROWTH_ASSETS = ['kale_s1', 'kale_s2', 'kale_s3', 'kale_s4'] as const;
 const RADISH_GROWTH_ASSETS = ['radish_s1', 'radish_s2', 'radish_s3', 'radish_s4'] as const;
+const GRAPE_GROWTH_ASSETS = ['grape_s1', 'grape_s2', 'grape_s3', 'grape_s4'] as const;
 
 type CropDrawStyle = Parameters<IDisplay['drawRect']>[4];
 type CropImageStyle = Parameters<IDisplay['drawImage']>[5];
@@ -178,6 +179,7 @@ export class CropPlot {
     else if (def.id === 'spinach') this.renderSpinachStage(cx, y, stage, cropDisplay);
     else if (def.id === 'kale') this.renderKaleStage(cx, y, stage, cropDisplay);
     else if (def.id === 'radish') this.renderRadishStage(cx, y, stage, cropDisplay);
+    else if (def.id === 'grape') this.renderGrapeStage(cx, y, stage, cropDisplay);
     else this.renderCropStage(cx, cy, def, stage, cropDisplay);
 
     // Water droplet indicator
@@ -240,7 +242,7 @@ export class CropPlot {
     const stageIndex = Math.min(TOMATO_GROWTH_ASSETS.length - 1, Math.max(0, stage));
     const asset = MakkoEngine.staticAsset(TOMATO_GROWTH_ASSETS[stageIndex]);
     if (asset?.image.complete && asset.image.naturalWidth > 0) {
-      const maxHeights = [24, 34, 46, 50] as const;
+      const maxHeights = [24, 34, 46, 72] as const;
       const height = maxHeights[stageIndex];
       const scale = height / asset.height;
       const width = asset.width * scale;
@@ -254,7 +256,7 @@ export class CropPlot {
     const stageIndex = Math.min(BLUEBERRY_GROWTH_ASSETS.length - 1, Math.max(0, stage));
     const asset = MakkoEngine.staticAsset(BLUEBERRY_GROWTH_ASSETS[stageIndex]);
     if (asset?.image.complete && asset.image.naturalWidth > 0) {
-      const maxHeights = [24, 34, 46, 50] as const;
+      const maxHeights = [24, 34, 46, 64] as const;
       const height = maxHeights[stageIndex];
       const scale = height / asset.height;
       const width = asset.width * scale;
@@ -268,7 +270,7 @@ export class CropPlot {
     const stageIndex = Math.min(CORN_GROWTH_ASSETS.length - 1, Math.max(0, stage));
     const asset = MakkoEngine.staticAsset(CORN_GROWTH_ASSETS[stageIndex]);
     if (asset?.image.complete && asset.image.naturalWidth > 0) {
-      const maxHeights = [26, 34, 46, 56] as const;
+      const maxHeights = [26, 34, 58, 132] as const;
       const height = maxHeights[stageIndex];
       const scale = height / asset.height;
       const width = asset.width * scale;
@@ -296,7 +298,7 @@ export class CropPlot {
     const stageIndex = Math.min(PUMPKIN_GROWTH_ASSETS.length - 1, Math.max(0, stage));
     const asset = MakkoEngine.staticAsset(PUMPKIN_GROWTH_ASSETS[stageIndex]);
     if (asset?.image.complete && asset.image.naturalWidth > 0) {
-      const maxHeights = [24, 34, 46, 54] as const;
+      const maxHeights = [24, 34, 46, 60] as const;
       const height = maxHeights[stageIndex];
       const scale = height / asset.height;
       const width = asset.width * scale;
@@ -310,8 +312,9 @@ export class CropPlot {
     const stageIndex = Math.min(KALE_GROWTH_ASSETS.length - 1, Math.max(0, stage));
     const asset = MakkoEngine.staticAsset(KALE_GROWTH_ASSETS[stageIndex]);
     if (asset?.image.complete && asset.image.naturalWidth > 0) {
-      const maxHeights = [26, 36, 46, 54] as const;
-      const scale = Math.min(58 / asset.width, maxHeights[stageIndex] / asset.height);
+      const maxHeights = [26, 36, 52, 60] as const;
+      const maxWidths = [58, 58, 66, 74] as const;
+      const scale = Math.min(maxWidths[stageIndex] / asset.width, maxHeights[stageIndex] / asset.height);
       const width = asset.width * scale;
       const height = asset.height * scale;
       d.drawImage(asset.image, cx - width / 2, tileY + 58 - height, width, height);
@@ -326,6 +329,21 @@ export class CropPlot {
     if (asset?.image.complete && asset.image.naturalWidth > 0) {
       const maxHeights = [24, 32, 44, 52] as const;
       const scale = Math.min(58 / asset.width, maxHeights[stageIndex] / asset.height);
+      const width = asset.width * scale;
+      const height = asset.height * scale;
+      d.drawImage(asset.image, cx - width / 2, tileY + 58 - height, width, height);
+      return;
+    }
+    this.renderCropStage(cx, tileY + 34, this.cropDef, stage, d);
+  }
+
+  private renderGrapeStage(cx: number, tileY: number, stage: number, d: IDisplay): void {
+    const stageIndex = Math.min(GRAPE_GROWTH_ASSETS.length - 1, Math.max(0, stage));
+    const asset = MakkoEngine.staticAsset(GRAPE_GROWTH_ASSETS[stageIndex]);
+    if (asset?.image.complete && asset.image.naturalWidth > 0) {
+      const maxHeights = [23, 32, 45, 90] as const;
+      const maxWidths = [58, 58, 58, 84] as const;
+      const scale = Math.min(maxWidths[stageIndex] / asset.width, maxHeights[stageIndex] / asset.height);
       const width = asset.width * scale;
       const height = asset.height * scale;
       d.drawImage(asset.image, cx - width / 2, tileY + 58 - height, width, height);

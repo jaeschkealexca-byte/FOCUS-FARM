@@ -17,6 +17,7 @@ export interface CropDef {
   accentColor: string;
   foliageColor: string;
   staticAssetKey?: string;
+  harvestAssetKey?: string;
 }
 
 export const CROPS: Record<string, CropDef> = {
@@ -82,6 +83,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#e58475',
     foliageColor: '#53804b',
     staticAssetKey: 'rhubarb_1',
+    harvestAssetKey: 'rhubarb_2',
   },
   carrot: {
     id: 'carrot',
@@ -98,6 +100,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#ffa05c',
     foliageColor: '#4f9b3c',
     staticAssetKey: 'carrot_1',
+    harvestAssetKey: 'carrot_2',
   },
   potato: {
     id: 'potato',
@@ -114,6 +117,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#ebd09e',
     foliageColor: '#5c8a42',
     staticAssetKey: 'potatoe_1',
+    harvestAssetKey: 'potato_2',
   },
   beet: {
     id: 'beet',
@@ -130,6 +134,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#e45b61',
     foliageColor: '#4f7937',
     staticAssetKey: 'beet_1',
+    harvestAssetKey: 'beet_2',
   },
   pumpkin: {
     id: 'pumpkin',
@@ -146,6 +151,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#ff9842',
     foliageColor: '#4d7832',
     staticAssetKey: 'pumpkin_1',
+    harvestAssetKey: 'pumpkin_2',
   },
   strawberry: {
     id: 'strawberry',
@@ -162,6 +168,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#ff7582',
     foliageColor: '#387b32',
     staticAssetKey: 'strawberry_1',
+    harvestAssetKey: 'strawberry_2',
   },
   tomato: {
     id: 'tomato',
@@ -178,6 +185,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#ff6b6b',
     foliageColor: '#3c7e33',
     staticAssetKey: 'tomato_1',
+    harvestAssetKey: 'tomato_2',
   },
   corn: {
     id: 'corn',
@@ -194,6 +202,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#ffe57f',
     foliageColor: '#558b2f',
     staticAssetKey: 'corn_1',
+    harvestAssetKey: 'corn_2',
   },
   bok_choy: {
     id: 'bok_choy',
@@ -226,6 +235,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#74b85f',
     foliageColor: '#32673b',
     staticAssetKey: 'brocolli_1',
+    harvestAssetKey: 'broccoli_2',
   },
   melon: {
     id: 'melon',
@@ -242,6 +252,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#e4c85a',
     foliageColor: '#4f7937',
     staticAssetKey: 'melon_1',
+    harvestAssetKey: 'melon_2',
   },
   red_cabbage: {
     id: 'red_cabbage',
@@ -274,6 +285,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#839fe0',
     foliageColor: '#477542',
     staticAssetKey: 'blueberry_1',
+    harvestAssetKey: 'blueberry_2',
   },
   cranberry: {
     id: 'cranberry',
@@ -369,6 +381,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#f4f7df',
     foliageColor: '#6f9b4f',
     staticAssetKey: 'leek_1',
+    harvestAssetKey: 'leek_2',
   },
   parsnip: {
     id: 'parsnip',
@@ -385,6 +398,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#fff0d4',
     foliageColor: '#6e9854',
     staticAssetKey: 'parsnip_1',
+    harvestAssetKey: 'parsnip_2',
   },
   radish: {
     id: 'radish',
@@ -401,6 +415,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#f98da3',
     foliageColor: '#688e66',
     staticAssetKey: 'radish_1',
+    harvestAssetKey: 'radish_2',
   },
   spinach: {
     id: 'spinach',
@@ -417,6 +432,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#69a66a',
     foliageColor: '#285d3b',
     staticAssetKey: 'spinach',
+    harvestAssetKey: 'spinach_2',
   },
   winter_radish: {
     id: 'winter_radish',

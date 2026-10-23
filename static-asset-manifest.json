@@ -1315,27 +1315,25 @@
       }
     },
     "broccoli_s3": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/broccoli_s3_1792732410659.png?t=1792732434149",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/broccoli_s3_1792732410659.png?t=1792739016513",
       "name": "broccoli s3",
       "asset_type": "prop",
       "sourceId": "a972fc76-1edc-4482-b897-5e743402ff70",
       "metadata": {
         "width": 495,
         "height": 435,
-        "format": "png",
-        "category": "characters"
+        "format": "png"
       }
     },
     "broccoli_s4": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/broccoli_s4_1792732419411.png?t=1792732434976",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/broccoli_s4_1792732419411.png?t=1792739015405",
       "name": "broccoli s4",
       "asset_type": "prop",
       "sourceId": "0b78675f-3af2-4325-b7b1-db8a9c8e33c0",
       "metadata": {
         "width": 863,
         "height": 642,
-        "format": "png",
-        "category": "characters"
+        "format": "png"
       }
     },
     "parsnip_s1": {
@@ -1567,19 +1565,18 @@
       }
     },
     "grape_s4": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/grape_s4_1792733030332.png?t=1792733041650",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/grape_s4_1792733030332.png?t=1792739012653",
       "name": "grape s4",
       "asset_type": "prop",
       "sourceId": "a23b5cfb-fec9-4613-98ba-54bde3e8246f",
       "metadata": {
         "width": 536,
         "height": 638,
-        "format": "png",
-        "category": "characters"
+        "format": "png"
       }
     },
     "parsnip_2": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/parsnip_2_1792734026775.png?t=1792734034865",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/parsnip_2_1792734026775.png?t=1792738972556",
       "name": "parsnip 2",
       "asset_type": "prop",
       "sourceId": "381d9886-4a07-48af-babc-443e40dd4b9a",
@@ -1590,7 +1587,7 @@
       }
     },
     "spinach_2": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/spinach_2_1792734020967.png?t=1792734037810",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/spinach_2_1792734020967.png?t=1792738974381",
       "name": "spinach 2",
       "asset_type": "prop",
       "sourceId": "642489f9-e441-407d-8adf-800b580bf9bf",
@@ -1601,7 +1598,7 @@
       }
     },
     "radish_2": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/radish_2_1792734008730.png?t=1792734039493",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/radish_2_1792734008730.png?t=1792738975873",
       "name": "radish 2",
       "asset_type": "prop",
       "sourceId": "481766e4-4cc2-44fd-a452-ba725f732dd2",
@@ -1612,7 +1609,7 @@
       }
     },
     "leek_2": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/leek_2_1792734004176.png?t=1792734040861",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/leek_2_1792734004176.png?t=1792738982052",
       "name": "leek 2",
       "asset_type": "prop",
       "sourceId": "c0d368be-9b78-4913-a1c9-8d82eecf7d1c",
@@ -1623,7 +1620,7 @@
       }
     },
     "garlic_2": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/garlic_2_1792733937605.png?t=1792734042794",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/garlic_2_1792733937605.png?t=1792738983762",
       "name": "garlic 2",
       "asset_type": "prop",
       "sourceId": "50304046-0dfb-4598-8444-8fb292fd6be4",
@@ -1634,7 +1631,7 @@
       }
     },
     "kale_s2_1": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/kale_s2_1792733932835.png?t=1792734044517",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/kale_s2_1792733932835.png?t=1792738985435",
       "name": "kale s2_1",
       "asset_type": "prop",
       "sourceId": "9d3eea6c-fff6-4c22-b9f7-cf7354780d2a",
@@ -1645,7 +1642,7 @@
       }
     },
     "rhubarb_2": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/rhubarb_2_1792733927840.png?t=1792734046504",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/rhubarb_2_1792733927840.png?t=1792738986383",
       "name": "rhubarb 2",
       "asset_type": "prop",
       "sourceId": "209d0b86-a6f4-4282-8ab4-00663c610137",
@@ -1656,7 +1653,7 @@
       }
     },
     "broccoli_2": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/broccoli_2_1792733877984.png?t=1792734047896",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/broccoli_2_1792733877984.png?t=1792738988052",
       "name": "broccoli 2",
       "asset_type": "prop",
       "sourceId": "758fd32f-8bf1-4ce2-a107-d40b33da0db5",
@@ -1667,7 +1664,7 @@
       }
     },
     "eggplant_2": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/eggplant_2_1792733868383.png?t=1792734049230",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/eggplant_2_1792733868383.png?t=1792738989102",
       "name": "eggplant 2",
       "asset_type": "prop",
       "sourceId": "abd3d3b4-3576-4e20-851b-d2e3518618d5",
@@ -1678,7 +1675,7 @@
       }
     },
     "beet_2": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/beet_2_1792733862876.png?t=1792734053295",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/beet_2_1792733862876.png?t=1792738991973",
       "name": "beet 2",
       "asset_type": "prop",
       "sourceId": "d9a6191b-2cec-4300-9b75-70449a486c7a",
@@ -1689,7 +1686,7 @@
       }
     },
     "pumpkin_2": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/pumpkin_2_1792733857452.png?t=1792734054365",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/pumpkin_2_1792733857452.png?t=1792738993200",
       "name": "pumpkin 2",
       "asset_type": "prop",
       "sourceId": "8039fb14-eb86-4ba9-8696-6bafb9cf98c1",
@@ -1700,7 +1697,7 @@
       }
     },
     "melon_2": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/melon_2_1792733809523.png?t=1792734055888",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/melon_2_1792733809523.png?t=1792738996252",
       "name": "melon 2",
       "asset_type": "prop",
       "sourceId": "8ace29f1-7bca-4d4e-967b-4d00493dffe2",
@@ -1711,7 +1708,7 @@
       }
     },
     "blueberry_2": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/blueberry_2_1792733799063.png?t=1792734057646",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/blueberry_2_1792733799063.png?t=1792738997469",
       "name": "blueberry 2",
       "asset_type": "prop",
       "sourceId": "72cddd1a-8756-4992-bf4e-bef7aca3ccf7",
@@ -1722,7 +1719,7 @@
       }
     },
     "corn_2": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/corn_2_1792733761864.png?t=1792734060098",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/corn_2_1792733761864.png?t=1792738999776",
       "name": "corn 2",
       "asset_type": "prop",
       "sourceId": "a0113d34-a8a0-465a-a1af-d88d4fb959d4",
@@ -1733,7 +1730,7 @@
       }
     },
     "cranberry_2_1": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/cranberry_2_1792733713832.png?t=1792734061650",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/cranberry_2_1792733713832.png?t=1792739000961",
       "name": "cranberry 2_1",
       "asset_type": "prop",
       "sourceId": "afa1bced-ec2f-42f9-92a2-90b8c8c5e3e4",
@@ -1744,7 +1741,7 @@
       }
     },
     "tomato_2": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/tomato_2_1792733704839.png?t=1792734062833",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/tomato_2_1792733704839.png?t=1792739004145",
       "name": "tomato 2",
       "asset_type": "prop",
       "sourceId": "bd12debb-a3ee-44b3-8a92-1716d7651cfa",
@@ -1755,7 +1752,7 @@
       }
     },
     "strawberry_2": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/strawberry_2_1792733622633.png?t=1792734064480",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/strawberry_2_1792733622633.png?t=1792739005234",
       "name": "strawberry 2",
       "asset_type": "prop",
       "sourceId": "5974190d-bcb9-478a-8165-f3b8f544aa71",
@@ -1766,7 +1763,7 @@
       }
     },
     "potato_2": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/potato_2_1792733606074.png?t=1792734067203",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/potato_2_1792733606074.png?t=1792739008141",
       "name": "potato 2",
       "asset_type": "prop",
       "sourceId": "ee17f86c-62cf-4dc3-9fa1-94794e8ef47b",
@@ -1777,7 +1774,7 @@
       }
     },
     "carrot_2": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/carrot_2_1792733588559.png?t=1792734073075",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/carrot_2_1792733588559.png?t=1792739009110",
       "name": "carrot 2",
       "asset_type": "prop",
       "sourceId": "9d066f89-4a94-4788-b57e-432e1326eb22",
@@ -1788,13 +1785,24 @@
       }
     },
     "cauliflower_2": {
-      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/cauliflower_2_1792733582959.png?t=1792734074609",
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/cauliflower_2_1792733582959.png?t=1792739011527",
       "name": "cauliflower 2",
       "asset_type": "prop",
       "sourceId": "b14e8ebd-3325-4ce8-9865-315a25efd372",
       "metadata": {
         "width": 665,
         "height": 632,
+        "format": "png"
+      }
+    },
+    "grape_2": {
+      "url": "https://api.makko.ai/storage/v1/object/public/image-assets/59d0e9a8-c389-478f-8c41-af9c06771176/prop/grape_2_1792734119827.png?t=1792738971295",
+      "name": "grape 2",
+      "asset_type": "prop",
+      "sourceId": "068459d3-c465-4173-8dc7-0da2ee248d5c",
+      "metadata": {
+        "width": 520,
+        "height": 681,
         "format": "png"
       }
     }

@@ -1,3 +1,5 @@
 # TODO
 
-- [x] Inventory deletion and toolbar unassignment: inspect current state/save flows, implement whole-stack deletion and shortcut removal, then verify the project build.
+- [x] Inspect harvest-button input, crop readiness, and inventory item rendering.
+- [x] Integrate the provided crop harvest assets into inventory item handling and harvesting.
+- [x] Build and verify the completed integration.

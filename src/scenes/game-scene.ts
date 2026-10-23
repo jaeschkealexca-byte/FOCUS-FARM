@@ -125,6 +125,16 @@ export class GameScene extends BaseScene {
       if (i.isKeyPressed(`Digit${j + 1}`)) this.inventoryWindow?.selectHotbarSlot(j);
     }
 
+    if (this.tool === 3 && i.isMousePressed(0)) {
+      const centerX = this.world.originX + this.world.width * 32;
+      const centerY = this.world.originY + this.world.height * 32;
+      const worldX = centerX + (i.mouseX - centerX) / this.world.zoom;
+      const worldY = centerY + (i.mouseY - centerY) / this.world.zoom;
+      const gridX = Math.floor((worldX - this.world.originX) / 64);
+      const gridY = Math.floor((worldY - this.world.originY) / 64);
+      const plot = this.world.plotAt(gridX, gridY);
+      if (plot?.planted && this.world.useTool(this.tool, plot)) this.persist();
+    }
     if (i.isKeyPressed('KeyE') && this.world.useTool(this.tool)) this.persist();
     if (i.isKeyPressed('KeyV') && this.world.sellProduce()) this.persist();
   }

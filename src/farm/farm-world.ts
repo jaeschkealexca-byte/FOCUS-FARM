@@ -26,7 +26,7 @@ export class FarmWorld {
   message = 'A small beginning. Press E to till the tile in front of you.';
 
   zoomIn(): void {
-    this.zoom = Math.min(1.25, Math.round((this.zoom + 0.1) * 10) / 10);
+    this.zoom = Math.min(3, Math.round((this.zoom + 0.1) * 10) / 10);
   }
 
   zoomOut(): void {
@@ -73,8 +73,8 @@ export class FarmWorld {
     this.message = `Selected: ${crop.name} Seeds (${count} in pouch). Press E to plant.`;
   }
 
-  useTool(tool: number): boolean {
-    const p = this.targetPlot;
+  useTool(tool: number, plot: CropPlot | undefined = this.targetPlot): boolean {
+    const p = plot;
     if (!p) {
       this.message = 'That tile is beyond the farm or reserved for the market.';
       return false;
