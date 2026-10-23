@@ -234,7 +234,6 @@ export class FarmWorld {
     data.produce = { ...this.produce };
     data.selectedSeed = this.selectedSeedId;
     data.toolbarSlots = [...this.toolbarSlots];
-    data.cropPlotsClearedForGrowthTest = true;
     data.coins = this.coins;
     data.sessions = this.sessions;
     data.minutes = this.minutes;
@@ -315,6 +314,18 @@ export class FarmWorld {
         plot.previewGrowth = Math.min(plot.cropDef.growthMinutes, plot.growth + elapsedMinutes);
       }
     }
+  }
+
+  commitFocusProgress(minutes: number, snapshot: readonly number[]): void {
+    if (minutes <= 0) return;
+    for (const index of snapshot) {
+      const plot = this.plots[index];
+      if (plot && plot.planted && plot.watered && !plot.mature) {
+        plot.growth = Math.min(plot.cropDef.growthMinutes, plot.growth + minutes);
+        if (plot.mature) plot.watered = false;
+      }
+    }
+    this.clearGrowthPreview();
   }
 
   clearGrowthPreview(): void {

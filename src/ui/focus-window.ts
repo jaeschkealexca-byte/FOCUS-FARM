@@ -205,7 +205,11 @@ export class FocusWindow {
   }
 
   disposeSession(): void {
-    this.session?.cancel();
+    if (this.session) {
+      this.world?.commitFocusProgress(this.session.elapsedMinutes, this.session.plots);
+      this.session.cancel();
+      this.saveFarm?.();
+    }
     this.session = null;
     this.world?.clearGrowthPreview();
     this.hide();
@@ -280,7 +284,13 @@ export class FocusWindow {
     if (target === 'navShop' && this.world && this.saveFarm) { this.shop.open(this.world, this.saveFarm, 'Back to focus'); return; }
     if (target === 'play') this.startTimer();
     if (target === 'pause') this.session?.pause();
-    if (target === 'reset') { this.session?.cancel(); this.session = null; this.world?.clearGrowthPreview(); }
+    if (target === 'reset') {
+      if (this.session) this.world?.commitFocusProgress(this.session.elapsedMinutes, this.session.plots);
+      this.session?.cancel();
+      this.session = null;
+      this.world?.clearGrowthPreview();
+      this.saveFarm?.();
+    }
     if (target === 'addTask') {
       this.editingTask = true;
       this.draft = '';

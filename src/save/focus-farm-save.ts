@@ -28,6 +28,7 @@ export class FocusFarmSave implements SaveData {
   static isValid(value: unknown): value is FocusFarmSave {
     const record = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
     const count = (v: unknown): v is number => typeof v === 'number' && Number.isSafeInteger(v) && v >= 0;
+    const growthValue = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v >= 0;
     const position = (x: unknown, y: unknown): boolean => count(x) && count(y) && x < 18 && y < 10;
 
     if (!record(value) || (value.version !== 1 && value.version !== 2) || value.width !== 18 || value.height !== 10) return false;
@@ -51,7 +52,7 @@ export class FocusFarmSave implements SaveData {
       seen.add(index);
       if (typeof plot.tilled !== 'boolean' || typeof plot.watered !== 'boolean') return false;
       if (plot.crop !== null && typeof plot.crop !== 'string') return false;
-      if (!count(plot.growth)) return false;
+      if (!growthValue(plot.growth)) return false;
       if (plot.crop !== null && !plot.tilled) return false;
       if (plot.crop === null && (plot.watered || plot.growth !== 0)) return false;
       if (plot.y === 1 && (plot.x === 1 || plot.x === 2) && (plot.tilled || plot.crop !== null)) return false;

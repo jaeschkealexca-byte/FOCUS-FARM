@@ -51,6 +51,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#fffaf0',
     foliageColor: '#71964b',
     staticAssetKey: 'garlic_1',
+    harvestAssetKey: 'garlic_2',
   },
   kale: {
     id: 'kale',
@@ -67,6 +68,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#73a85e',
     foliageColor: '#2c6038',
     staticAssetKey: 'kale_redesign_1',
+    harvestAssetKey: 'kale_s2_1',
   },
   rhubarb: {
     id: 'rhubarb',
@@ -302,6 +304,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#e45b61',
     foliageColor: '#4f7937',
     staticAssetKey: 'cranberrie_1',
+    harvestAssetKey: 'cranberry_2_1',
   },
   grape: {
     id: 'grape',
@@ -318,6 +321,7 @@ export const CROPS: Record<string, CropDef> = {
     accentColor: '#aa79c5',
     foliageColor: '#4f7937',
     staticAssetKey: 'grape_1',
+    harvestAssetKey: 'grape_2',
   },
   cauliflower: {
     id: 'cauliflower',
