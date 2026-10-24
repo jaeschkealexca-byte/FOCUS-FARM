@@ -8,11 +8,15 @@ import { ShopWindow } from '../ui/shop-window';
 import { FocusWindow } from '../ui/focus-window';
 import { keyToDirection } from '../movement/grid-entity';
 import { UILayer } from '../ui/ui-layer';
-import { Button, Text, Panel } from '../ui/ui-elements';
+import { Button } from '../ui/ui-elements';
 import { SaveManager } from '../save/save-manager';
 import { FocusFarmSave } from '../save/focus-farm-save';
 import { InventoryWindow } from '../ui/inventory-window';
 import { SeedSelector } from '../ui/seed-selector';
+import { TimeHud } from '../ui/time-hud';
+
+/** Buttons on the right start below the corner clock. */
+const RIGHT_COLUMN_Y = 236;
 
 export class GameScene extends BaseScene {
   readonly id = 'game';
@@ -23,14 +27,12 @@ export class GameScene extends BaseScene {
   private tool = 0;
   private shop = new ShopWindow();
   private focus = new FocusWindow();
-  private openFocus = new Button({ label: '⏱ FOCUS & TASKS [F]', anchor: 'top-right', margin: 24, width: 312, height: 48, size: 'md' });
-  private openShop = new Button({ label: '🌸 SEED SHOP [B]', anchor: 'top-right', margin: 24, y: 56, width: 312, height: 48, size: 'md' });
-  private openBackpack = new Button({ label: '🎒 MY BACKPACK [I]', anchor: 'top-right', margin: 24, y: 112, width: 312, height: 48, size: 'md' });
-  private zoomIn = new Button({ label: '＋ ZOOM IN', anchor: 'top-right', margin: 24, x: -160, y: 168, width: 152, height: 40, size: 'sm' });
-  private zoomOut = new Button({ label: '－ ZOOM OUT', anchor: 'top-right', margin: 24, y: 168, width: 152, height: 40, size: 'sm' });
-  private calendarText = new Text({ text: '', size: 'sm', color: 'accent', bold: true });
-  private calendarDate = new Text({ text: '', size: 'sm', color: 'text' });
-  private hemisphereButton = new Button({ label: '', height: 34, size: 'sm', variant: 'ghost' });
+  private openFocus = new Button({ label: '⏱ FOCUS & TASKS [F]', anchor: 'top-right', margin: 24, y: RIGHT_COLUMN_Y, width: 312, height: 48, size: 'md' });
+  private openShop = new Button({ label: '🌸 SEED SHOP [B]', anchor: 'top-right', margin: 24, y: RIGHT_COLUMN_Y + 56, width: 312, height: 48, size: 'md' });
+  private openBackpack = new Button({ label: '🎒 MY BACKPACK [I]', anchor: 'top-right', margin: 24, y: RIGHT_COLUMN_Y + 112, width: 312, height: 48, size: 'md' });
+  private zoomIn = new Button({ label: '＋ ZOOM IN', anchor: 'top-right', margin: 24, x: -160, y: RIGHT_COLUMN_Y + 168, width: 152, height: 40, size: 'sm' });
+  private zoomOut = new Button({ label: '－ ZOOM OUT', anchor: 'top-right', margin: 24, y: RIGHT_COLUMN_Y + 168, width: 152, height: 40, size: 'sm' });
+  private timeHud = new TimeHud();
   private inventoryWindow: InventoryWindow | null = null;
   private seedSelector: SeedSelector | null = null;
 
@@ -55,10 +57,6 @@ export class GameScene extends BaseScene {
       () => this.persist(),
       () => this.shop.open(this.world, () => this.persist()),
     );
-    this.ui.add(new Panel({ anchor: 'top-left', margin: 24, width: 316, padding: 16, gap: 10, children: [
-      this.calendarText, this.calendarDate, this.hemisphereButton,
-      new Text({ text: 'Local time • real calendar', size: 'xs', color: 'muted' }),
-    ] }));
     this.ui.add(this.openFocus);
     this.ui.add(this.openShop);
     this.ui.add(this.openBackpack);
@@ -174,16 +172,13 @@ export class GameScene extends BaseScene {
   update(dt: number): void {
     const calendar = RealCalendar.shared;
     calendar.update(dt);
-    this.calendarText.text = `${calendar.time}  ·  ${calendar.season}`;
-    this.calendarDate.text = calendar.date;
-    this.hemisphereButton.label = `${calendar.hemisphere} · Switch`;
     this.focus.update(dt);
     if (this.focus.visible) return;
     if (this.shop.visible) { this.shop.update(dt); return; }
 
     this.ui.update(dt);
     if (!this.inventoryWindow?.visible) {
-      if (this.hemisphereButton.isClicked()) calendar.toggleHemisphere();
+      this.timeHud.handleClick();
       if (this.zoomIn.isClicked()) this.world.zoomIn();
       if (this.zoomOut.isClicked()) this.world.zoomOut();
       if (this.openFocus.isClicked()) this.focus.open(this.world, () => this.persist());
@@ -205,6 +200,7 @@ export class GameScene extends BaseScene {
       this.inventoryWindow?.renderToolbar();
       this.inventoryWindow?.render();
     }
+    if (!this.focus.visible && !this.shop.visible) this.timeHud.render();
     this.focus.render();
     this.shop.render();
     if (!this.focus.visible) this.renderCoinHud();
@@ -328,7 +324,7 @@ export class GameScene extends BaseScene {
 
   private getCoinShopButtonBounds(): { x: number; y: number; w: number; h: number } {
     const cardX = 24;
-    const cardY = 171;
+    const cardY = 24;
     const cardW = 316;
     const cardH = 52;
     const w = 88;
@@ -364,7 +360,7 @@ export class GameScene extends BaseScene {
     const w = this.shop.visible ? textXOffset + textWidth + padRight : 316;
     const h = this.shop.visible ? 46 : 52;
     const x = this.shop.visible ? Math.round((d.width - w) / 2) : 24;
-    const y = this.shop.visible ? 42 : 171;
+    const y = this.shop.visible ? 42 : 24;
 
     // Outer wooden frame with drop shadow matching the farm UI panels
     d.drawRoundRect(x + 3, y + 4, w, h, 14, { fill: '#17130f', alpha: 0.28 });

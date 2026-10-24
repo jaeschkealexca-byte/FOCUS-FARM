@@ -14,6 +14,17 @@ export class RealCalendar {
   season: 'Spring' | 'Summer' | 'Autumn' | 'Winter' = 'Spring';
   phase = 'Day';
   nightAlpha = 0;
+  /** Short English weekday, e.g. "Mon". */
+  weekday = '';
+  /** 1-based day within the current meteorological season. */
+  dayOfSeason = 1;
+  /** 12-hour clock without seconds, e.g. "06:20". */
+  clock = '';
+  meridiem: 'AM' | 'PM' = 'AM';
+  /** Fractional hour of the local day (0–24). */
+  hour = 0;
+  /** Local date key, e.g. "2026-10-24" (used to roll daily weather). */
+  dateKey = '';
   constructor() {
     try {
       const saved = this.saves.load();
@@ -39,6 +50,18 @@ export class RealCalendar {
     const index = (Math.floor((this.now.getMonth() + 1) / 3) + (this.southern ? 2 : 0)) % 4;
     this.season = (['Winter', 'Spring', 'Summer', 'Autumn'] as const)[index];
     const hour = this.now.getHours() + this.now.getMinutes() / 60;
+    this.hour = hour;
+    this.weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][this.now.getDay()];
+    const h12 = this.now.getHours() % 12 || 12;
+    this.clock = `${String(h12).padStart(2, '0')}:${String(this.now.getMinutes()).padStart(2, '0')}`;
+    this.meridiem = this.now.getHours() < 12 ? 'AM' : 'PM';
+    const y = this.now.getFullYear(), m = this.now.getMonth();
+    this.dateKey = `${y}-${String(m + 1).padStart(2, '0')}-${String(this.now.getDate()).padStart(2, '0')}`;
+    // Meteorological seasons start on Mar 1 / Jun 1 / Sep 1 / Dec 1.
+    const startMonth = m - (m + 1) % 3;
+    const seasonStart = new Date(y, startMonth, 1);
+    const today = new Date(y, m, this.now.getDate());
+    this.dayOfSeason = Math.round((today.getTime() - seasonStart.getTime()) / 86400000) + 1;
     this.phase = hour < 6 || hour >= 20 ? 'Night' : hour < 8 ? 'Dawn' : hour >= 18 ? 'Dusk' : 'Day';
     this.nightAlpha = hour < 6 || hour >= 20 ? .28 : hour < 8 ? .28 * (8 - hour) / 2 : hour >= 18 ? .28 * (hour - 18) / 2 : 0;
   }
