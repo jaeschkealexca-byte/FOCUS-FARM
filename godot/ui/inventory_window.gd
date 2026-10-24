@@ -48,6 +48,17 @@ const INFO := Rect2(66.0, 499.0, 382.0, 60.0)
 const CLOSE := Rect2(453.0, 39.0, 44.0, 43.0)
 const BTN_TOOLBAR := Rect2(250.0, 58.0, 92.0, 30.0)
 const BTN_DISCARD := Rect2(348.0, 58.0, 92.0, 30.0)
+# Bottom toolbar (Little Acre kit): wooden bar, flower end caps, 8 slots
+const TB_BAR := Rect2(642.0, 978.0, 636.0, 84.0)
+const TB_BAR_SRC_W := 743.0
+const TB_BAR_CAP := 40.0
+const TB_SLOT_X := 676.0
+const TB_SLOT_Y := 989.0
+const TB_SLOT_W := 64.0
+const TB_SLOT_H := 62.0
+const TB_STEP := 72.0
+const TB_END_LEFT := Vector2(632.0, 970.0)
+const TB_END_RIGHT := Vector2(1237.0, 970.0)
 const INK := Color("#5b3a29")
 const INK_SOFT := Color("#86634a")
 var _font: Font = null
@@ -156,55 +167,62 @@ func handle_click(mx: float, my: float) -> bool:
 	return false
 
 func render_toolbar(d: DrawSurface, mx: float, my: float) -> void:
-	var x := (1920.0 - 760.0) * 0.5
-	var y := 1003.0
-	d.draw_round_rect(x - 15.0, y - 5.0, 790.0, 78.0, 16.0, {"fill": "#17130f", "alpha": 0.3})
-	d.draw_round_rect(x - 13.0, y - 7.0, 786.0, 78.0, 16.0, {"fill": "#3e3326", "alpha": 0.94, "stroke": "#c9a878", "lineWidth": 2.0})
-
-	var div_x := x + 4.0 * 95.0 - 5.5
-	d.draw_line_styled(div_x, y + 4.0, div_x, y + 60.0, {"stroke": "#7a6348", "lineWidth": 2.0})
+	var c: CanvasItem = d.canvas
+	_draw_toolbar_bar(c)
 
 	var hovered_slot := _toolbar_slot_at(mx, my)
 	for slot in range(8):
-		var sx := x + float(slot) * 95.0
-		var sy := y
+		var sx := TB_SLOT_X + float(slot) * TB_STEP
+		var sy := TB_SLOT_Y
 		var active := (int(get_tool.call()) == slot) if slot < 4 else _selected_stack_matches(_toolbar_entry(slot - 4))
 		var hovered := hovered_slot == slot
-
-		d.draw_round_rect(sx, sy, 84.0, 64.0, 10.0, {
-			"fill": "#f6e4b8" if active else ("#eee0be" if hovered else "#e3d0aa"),
-			"stroke": "#b87538" if active else ("#c79252" if hovered else "#aa8a60"),
-			"lineWidth": 3.0 if active else 1.5
-		})
-		d.draw_round_rect(sx + 4.0, sy + 4.0, 76.0, 56.0, 7.0, {
-			"fill": "#fff6df" if active else ("#faf1dc" if hovered else "#f4ead3")
-		})
-		d.draw_text_styled(str(slot + 1), sx + 9.0, sy + 8.0, {"size": 11, "fill": "#6c5034", "align": "left", "baseline": "top"})
+		_tex_abs(c, "toolbar_slot_selected" if active else ("toolbar_slot_hover" if hovered else "toolbar_slot"), Vector2(sx, sy))
+		_text(c, str(slot + 1), sx + 8.0, sy + 10.0, 11, INK_SOFT, "left")
+		var cx := sx + TB_SLOT_W * 0.5
 
 		if slot == 1:
 			var crop := CropDatabase.get_crop_def(world.selected_seed_id)
 			var count := int(world.seeds.get(str(crop["id"]), 0))
-			CropDatabase.draw_seed_packet(d, crop, sx + 27.0, sy + 6.0, 30.0, 36.0)
-			var sname := "%s…" % str(crop["name"]).substr(0, 8) if str(crop["name"]).length() > 9 else str(crop["name"])
-			d.draw_text_styled(sname, sx + 42.0, sy + 51.0, {
-				"size": 10, "fill": "#3f5a36" if active else "#59432d", "align": "center", "baseline": "middle"
-			})
-			d.draw_round_rect(sx + 52.0, sy + 6.0, 26.0, 14.0, 4.0, {"fill": "#4c7a39" if count > 0 else "#a75e49"})
-			d.draw_text_styled("×%d" % count, sx + 65.0, sy + 13.0, {"size": 10, "fill": "#ffffff", "align": "center", "baseline": "middle"})
+			CropDatabase.draw_seed_packet(d, crop, cx - 12.0, sy + 9.0, 24.0, 30.0)
+			_text(c, _fit(str(crop["name"]), TB_SLOT_W - 8.0, 10), cx, sy + 50.0, 10, INK, "center")
+			var badge := "x%d" % count
+			var bw: float = _get_font().get_string_size(badge, HORIZONTAL_ALIGNMENT_LEFT, -1, 10).x + 8.0
+			d.draw_round_rect(sx + TB_SLOT_W - bw - 3.0, sy + 3.0, bw, 15.0, 6.0, {"fill": "#5f8a46" if count > 0 else "#a75e49"})
+			_text(c, badge, sx + TB_SLOT_W - 3.0 - bw * 0.5, sy + 10.5, 10, Color("#ffffff"), "center")
 		elif slot < 4:
 			var icons := ["⚒", "🌱", "💧", "✦"]
 			var labels := ["Hoe", "Seeds", "Water", "Harvest"]
-			d.draw_text_styled(icons[slot], sx + 42.0, sy + 25.0, {"size": 22, "fill": "#5c7547", "align": "center", "baseline": "middle"})
-			d.draw_text_styled(labels[slot], sx + 42.0, sy + 50.0, {"size": 10, "fill": "#59432d", "align": "center", "baseline": "middle"})
+			d.draw_text_styled(icons[slot], cx, sy + 27.0, {"size": 20, "fill": "#5c7547", "align": "center", "baseline": "middle"})
+			_text(c, labels[slot], cx, sy + 50.0, 10, INK, "center")
 		else:
 			var stack := _toolbar_entry(slot - 4)
 			if not stack.is_empty():
-				_draw_stack_icon(d, stack, sx + 42.0, sy + 27.0, 28.0)
-				var short_lbl := str(CropDatabase.get_crop_def(stack["id"])["name"]).substr(0, 7)
-				d.draw_text_styled(short_lbl, sx + 9.0, sy + 51.0, {"size": 10, "fill": "#6c5034", "align": "left", "baseline": "middle"})
-				d.draw_text_styled("×%d" % int(stack["count"]), sx + 75.0, sy + 51.0, {"size": 10, "fill": "#4c663b", "align": "right", "baseline": "middle"})
-			else:
-				d.draw_text_styled("·", sx + 42.0, sy + 32.0, {"size": 22, "fill": "#b7a68a", "align": "center", "baseline": "middle"})
+				_draw_stack_icon(d, stack, cx, sy + 27.0, 32.0)
+				var short_lbl := str(CropDatabase.get_crop_def(stack["id"])["name"])
+				_text(c, _fit(short_lbl, TB_SLOT_W - 22.0, 10), sx + 6.0, sy + 50.0, 10, INK, "left")
+				_text(c, "x%d" % int(stack["count"]), sx + TB_SLOT_W - 6.0, sy + 50.0, 10, Color("#4c663b"), "right")
+
+	# Flower corners on top of the bar ends (drawn last so slots never cover them)
+	_tex_abs(c, "toolbar_end_left", TB_END_LEFT)
+	_tex_abs(c, "toolbar_end_right", TB_END_RIGHT)
+
+func _draw_toolbar_bar(c: CanvasItem) -> void:
+	var t: Texture2D = AssetRegistry.get_tex("toolbar_bar")
+	if t == null:
+		return
+	var h: float = TB_BAR.size.y
+	var cap: float = TB_BAR_CAP
+	var x: float = TB_BAR.position.x
+	var y: float = TB_BAR.position.y
+	var w: float = TB_BAR.size.x
+	c.draw_texture_rect_region(t, Rect2(x, y, cap, h), Rect2(0.0, 0.0, cap, h))
+	c.draw_texture_rect_region(t, Rect2(x + cap, y, w - cap * 2.0, h), Rect2(cap, 0.0, TB_BAR_SRC_W - cap * 2.0, h))
+	c.draw_texture_rect_region(t, Rect2(x + w - cap, y, cap, h), Rect2(TB_BAR_SRC_W - cap, 0.0, cap, h))
+
+func _tex_abs(c: CanvasItem, key: String, pos: Vector2) -> void:
+	var t: Texture2D = AssetRegistry.get_tex(key)
+	if t != null:
+		c.draw_texture(t, Vector2(roundf(pos.x), roundf(pos.y)))
 
 func render_modal(d: DrawSurface, mx: float, my: float) -> void:
 	if not visible:
@@ -511,10 +529,8 @@ func _discard_selected_item() -> void:
 	on_save.call()
 
 func _toolbar_slot_at(mx: float, my: float) -> int:
-	var x := (1920.0 - 760.0) * 0.5
-	var y := 1003.0
 	for slot in range(8):
-		if _contains(mx, my, x + float(slot) * 95.0, y, 84.0, 64.0):
+		if _contains(mx, my, TB_SLOT_X + float(slot) * TB_STEP, TB_SLOT_Y, TB_SLOT_W, TB_SLOT_H):
 			return slot
 	return -1
 

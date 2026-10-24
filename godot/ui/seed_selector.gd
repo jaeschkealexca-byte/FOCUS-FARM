@@ -15,7 +15,7 @@ const ITEMS_PER_PAGE := 6
 const BAR_W := 440.0
 const BAR_H := 52.0
 const BAR_X := (1920.0 - BAR_W) * 0.5
-const BAR_Y := 938.0
+const BAR_Y := 920.0
 
 const POUCH_W := 600.0
 const POUCH_H := 290.0
