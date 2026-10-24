@@ -12,6 +12,13 @@ var shop: ShopWindowUI = ShopWindowUI.new()
 var focus: FocusWindowUI = FocusWindowUI.new()
 var inventory_window: InventoryWindowUI
 var seed_selector: SeedSelectorUI
+const TimeHudScript := preload("res://ui/time_hud.gd")
+var time_hud = TimeHudScript.new()
+const CoinHudScript := preload("res://ui/coin_hud.gd")
+var coin_hud = CoinHudScript.new()
+
+## The right-hand button column starts below the corner clock.
+const RIGHT_Y := 260.0
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
@@ -118,28 +125,27 @@ func _handle_left_click(mx: float, my: float) -> void:
 		return
 
 	# Top-right buttons
-	if _in_rect(mx, my, 1920.0 - 24.0 - 312.0, 24.0, 312.0, 48.0):
+	if _in_rect(mx, my, 1920.0 - 24.0 - 312.0, RIGHT_Y + 24.0, 312.0, 48.0):
 		focus.open(world, func() -> void: _persist())
 		return
-	if _in_rect(mx, my, 1920.0 - 24.0 - 312.0, 80.0, 312.0, 48.0):
+	if _in_rect(mx, my, 1920.0 - 24.0 - 312.0, RIGHT_Y + 80.0, 312.0, 48.0):
 		shop.open(world, func() -> void: _persist())
 		return
-	if _in_rect(mx, my, 1920.0 - 24.0 - 312.0, 136.0, 312.0, 48.0):
+	if _in_rect(mx, my, 1920.0 - 24.0 - 312.0, RIGHT_Y + 136.0, 312.0, 48.0):
 		if inventory_window.visible:
 			inventory_window.close()
 		else:
 			inventory_window.open()
 		return
-	if _in_rect(mx, my, 1920.0 - 24.0 - 312.0, 192.0, 152.0, 40.0):
+	if _in_rect(mx, my, 1920.0 - 24.0 - 312.0, RIGHT_Y + 192.0, 152.0, 40.0):
 		world.zoom_in()
 		return
-	if _in_rect(mx, my, 1920.0 - 24.0 - 152.0, 192.0, 152.0, 40.0):
+	if _in_rect(mx, my, 1920.0 - 24.0 - 152.0, RIGHT_Y + 192.0, 152.0, 40.0):
 		world.zoom_out()
 		return
 
-	# Hemisphere switch button in Calendar card
-	if _in_rect(mx, my, 40.0, 90.0, 284.0, 34.0):
-		RealCalendar.toggle_hemisphere()
+	# Corner clock: click to switch hemisphere
+	if time_hud.handle_click(mx, my):
 		return
 
 	if inventory_window.visible:
@@ -249,13 +255,15 @@ func draw_overlay(canvas: CanvasItem) -> void:
 
 	if not focus.visible and not shop.visible:
 		world.render_crop_hover(d, mp.x, mp.y)
-		_render_calendar_card(d, mp.x, mp.y)
 		_render_top_right_buttons(d, mp.x, mp.y)
 		_render_status_banner(d)
 		if not inventory_window.visible:
 			seed_selector.render(d, mp.x, mp.y)
 		inventory_window.render_toolbar(d, mp.x, mp.y)
 		inventory_window.render_modal(d, mp.x, mp.y)
+
+	if not focus.visible and not shop.visible:
+		time_hud.render(canvas, d, mp.x, mp.y)
 
 	focus.render(d, mp.x, mp.y)
 	shop.render(d, mp.x, mp.y)
@@ -314,11 +322,11 @@ func _render_calendar_card(d: DrawSurface, mx: float, my: float) -> void:
 
 func _render_top_right_buttons(d: DrawSurface, mx: float, my: float) -> void:
 	var rx := 1920.0 - 24.0 - 312.0
-	_draw_primary_btn(d, rx, 24.0, 312.0, 48.0, "⏱ FOCUS & TASKS [F]", 15, _in_rect(mx, my, rx, 24.0, 312.0, 48.0))
-	_draw_primary_btn(d, rx, 80.0, 312.0, 48.0, "🌸 SEED SHOP [B]", 15, _in_rect(mx, my, rx, 80.0, 312.0, 48.0))
-	_draw_primary_btn(d, rx, 136.0, 312.0, 48.0, "🎒 MY BACKPACK [I]", 15, _in_rect(mx, my, rx, 136.0, 312.0, 48.0))
-	_draw_primary_btn(d, rx, 192.0, 152.0, 40.0, "＋ ZOOM IN", 13, _in_rect(mx, my, rx, 192.0, 152.0, 40.0))
-	_draw_primary_btn(d, rx + 160.0, 192.0, 152.0, 40.0, "－ ZOOM OUT", 13, _in_rect(mx, my, rx + 160.0, 192.0, 152.0, 40.0))
+	_draw_primary_btn(d, rx, RIGHT_Y + 24.0, 312.0, 48.0, "⏱ FOCUS & TASKS [F]", 15, _in_rect(mx, my, rx, RIGHT_Y + 24.0, 312.0, 48.0))
+	_draw_primary_btn(d, rx, RIGHT_Y + 80.0, 312.0, 48.0, "🌸 SEED SHOP [B]", 15, _in_rect(mx, my, rx, RIGHT_Y + 80.0, 312.0, 48.0))
+	_draw_primary_btn(d, rx, RIGHT_Y + 136.0, 312.0, 48.0, "🎒 MY BACKPACK [I]", 15, _in_rect(mx, my, rx, RIGHT_Y + 136.0, 312.0, 48.0))
+	_draw_primary_btn(d, rx, RIGHT_Y + 192.0, 152.0, 40.0, "＋ ZOOM IN", 13, _in_rect(mx, my, rx, RIGHT_Y + 192.0, 152.0, 40.0))
+	_draw_primary_btn(d, rx + 160.0, RIGHT_Y + 192.0, 152.0, 40.0, "－ ZOOM OUT", 13, _in_rect(mx, my, rx + 160.0, RIGHT_Y + 192.0, 152.0, 40.0))
 
 func _draw_primary_btn(d: DrawSurface, x: float, y: float, w: float, h: float, label: String, font_size: int, hovered: bool) -> void:
 	d.draw_round_rect(x + 2.0, y + 3.0, w, h, 10.0, {"fill": "#17130f", "alpha": 0.26})
@@ -393,15 +401,21 @@ func _get_target_action_hint() -> Dictionary:
 	}
 
 func _coin_shop_button_bounds() -> Dictionary:
-	return {"x": 24.0 + 316.0 - 88.0 - 12.0, "y": 171.0 + (52.0 - 30.0) * 0.5, "w": 88.0, "h": 30.0}
+	return {"x": 24.0 + 316.0 - 88.0 - 12.0, "y": 24.0 + (52.0 - 30.0) * 0.5, "w": 88.0, "h": 30.0}
 
 func _is_coin_shop_button_hovered(mx: float, my: float) -> bool:
 	if shop.visible or focus.visible:
 		return false
-	var b: Dictionary = _coin_shop_button_bounds()
-	return _in_rect(mx, my, float(b["x"]), float(b["y"]), float(b["w"]), float(b["h"]))
+	return coin_hud.is_hovered(world.coins, mx, my)
 
 func _render_coin_hud(d: DrawSurface, mx: float, my: float) -> void:
+	# On the farm: wooden gold-coin bar under the clock (grows with the balance).
+	# While the shop is open the small centred badge below is used instead.
+	if not shop.visible:
+		coin_hud.right_x = 1920.0 - time_hud.margin - 6.0
+		coin_hud.top_y = 206.0
+		coin_hud.render(d.canvas, world.coins, mx, my)
+		return
 	var balance_text: String = "%d Coins" % world.coins
 	var font_size: int = 18 if shop.visible else 20
 	var text_w: float = ceilf(DrawSurface.measure_text(balance_text, font_size))
@@ -416,7 +430,7 @@ func _render_coin_hud(d: DrawSurface, mx: float, my: float) -> void:
 	var w: float = (text_x_offset + text_w + pad_right) if shop.visible else 316.0
 	var h: float = 46.0 if shop.visible else 52.0
 	var x: float = roundf((1920.0 - w) * 0.5) if shop.visible else 24.0
-	var y: float = 42.0 if shop.visible else 171.0
+	var y: float = 42.0 if shop.visible else 24.0
 
 	d.draw_round_rect(x + 3.0, y + 4.0, w, h, 14.0, {"fill": "#17130f", "alpha": 0.28})
 	d.draw_round_rect(x, y, w, h, 14.0, {"fill": "#3e3326", "stroke": "#c9a878", "lineWidth": 2.0})

@@ -10,6 +10,13 @@ var date_str: String = ""
 var season: String = "Spring"
 var phase: String = "Day"
 var night_alpha: float = 0.0
+## Fields used by the corner clock HUD (ui/time_hud.gd).
+var weekday_str: String = ""      # e.g. "Mon"
+var clock_str: String = ""        # 12-hour clock, e.g. "06:20"
+var meridiem: String = "AM"
+var hour_f: float = 0.0           # fractional hour 0–24
+var date_key: String = ""         # e.g. "2026-10-24" (daily weather seed)
+var day_of_season: int = 1        # 1-based day in the meteorological season
 var _last_second: int = -1
 
 func _ready() -> void:
@@ -62,6 +69,23 @@ func update_calendar(_dt: float) -> void:
 	season = seasons_list[index]
 
 	var hour: float = float(dt_hour) + float(dt_min) / 60.0
+	hour_f = hour
+	weekday_str = weekdays[wd_idx]
+	var h12: int = dt_hour % 12
+	if h12 == 0:
+		h12 = 12
+	clock_str = "%02d:%02d" % [h12, dt_min]
+	meridiem = "AM" if dt_hour < 12 else "PM"
+	date_key = "%04d-%02d-%02d" % [dt_year, dt_month, dt_day]
+	# Meteorological seasons start on Mar 1 / Jun 1 / Sep 1 / Dec 1.
+	var start_month: int = dt_month - (dt_month % 3)
+	var start_year: int = dt_year
+	if start_month == 0:
+		start_month = 12
+		start_year -= 1
+	var start_unix: int = Time.get_unix_time_from_datetime_dict({"year": start_year, "month": start_month, "day": 1, "hour": 12, "minute": 0, "second": 0})
+	var today_unix: int = Time.get_unix_time_from_datetime_dict({"year": dt_year, "month": dt_month, "day": dt_day, "hour": 12, "minute": 0, "second": 0})
+	day_of_season = int(roundf(float(today_unix - start_unix) / 86400.0)) + 1
 	if hour < 6.0 or hour >= 20.0:
 		phase = "Night"
 		night_alpha = 0.28

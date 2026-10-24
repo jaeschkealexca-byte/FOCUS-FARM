@@ -1,1 +1,12 @@
 *.png filter=lfs diff=lfs merge=lfs -text
+
+# Small HUD sprites are stored directly in git (no LFS)
+godot/assets/sprites/time_panel.png -filter -diff -merge binary
+godot/assets/sprites/sky_*.png -filter -diff -merge binary
+godot/assets/sprites/badge_*.png -filter -diff -merge binary
+godot/assets/sprites/coin_panel.png -filter -diff -merge binary
+godot/assets/sprites/backpack_*.png -filter -diff -merge binary
+godot/assets/sprites/toolbar_*.png -filter -diff -merge binary
+godot/assets/sprites/grass_1.png -filter -diff -merge binary
+godot/assets/sprites/grass_2.png -filter -diff -merge binary
+godot/assets/sprites/grass_3.png -filter -diff -merge binary
