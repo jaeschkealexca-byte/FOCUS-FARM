@@ -61,14 +61,11 @@ func render_base(d: DrawSurface, x: float, y: float, grid_x: int, grid_y: int) -
 		d.draw_rect_styled(x, y + 63.0, 64.0, 1.0, {"fill": palette["edge"]})
 
 	if not tilled:
+		# Grass tufts (grass_1..3) are drawn by FarmWorldData.render_grass_decor
+		# in a separate pass; only seasonal accents stay here.
 		var px := x + 9.0 + float((grid_x * 13 + grid_y * 9) % 39)
 		var py := y + 10.0 + float((grid_y * 17 + grid_x * 3) % 36)
-		d.draw_rect_styled(px, py, 3.0, 7.0, {"fill": palette["detail"]})
-		d.draw_rect_styled(px + 4.0, py - 3.0, 3.0, 8.0, {"fill": palette["edge"]})
-		if season == "Spring" and shade == 0:
-			d.draw_rect_styled(px - 3.0, py - 4.0, 9.0, 5.0, {"fill": palette["flower"]})
-			d.draw_rect_styled(px, py - 5.0, 3.0, 3.0, {"fill": "#fff0c6"})
-		elif season == "Autumn":
+		if season == "Autumn":
 			d.draw_rect_styled(px + 12.0, py + 7.0, 8.0, 4.0, {"fill": "#d58554" if shade % 2 != 0 else "#e6ba69"})
 		elif season == "Winter":
 			d.draw_line_styled(px - 4.0, py + 1.0, px + 8.0, py + 1.0, {"stroke": "#ffffff", "lineWidth": 2.0})

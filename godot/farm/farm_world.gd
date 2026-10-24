@@ -297,6 +297,122 @@ func screen_to_grid(screen_x: float, screen_y: float) -> Vector2i:
 		int(floor((world_y - ORIGIN_Y) / 64.0))
 	)
 
+# --- Grass decoration -------------------------------------------------------
+# Tufts from grass_1..grass_3 are scattered over untilled tiles. Tilled tiles
+# get no tufts of their own, but grass on neighbouring tiles leans slightly
+# over the soil edge. Drawn in its own pass after all tile bases so tufts can
+# overlap a neighbouring tile without being painted over.
+
+const GRASS_KEYS := ["grass_1", "grass_2", "grass_3"]
+# Base height per variant at zoom 1, matched to crop sprites (up to ~58 px tall,
+# 56 px wide): grass_1 is a wide clump (~56 px), grass_3 a tall bush.
+const GRASS_HEIGHTS := [26.0, 36.0, 46.0]
+# How far an edge tuft may reach over neighbouring soil, in px.
+const GRASS_SOIL_OVERLAP := 11.0
+
+func _hash3(a: int, b: int, c: int) -> int:
+	var h: int = (a * 73856093) ^ (b * 19349663) ^ (c * 83492791)
+	h = (h ^ (h >> 13)) * 1274126177
+	return absi(h ^ (h >> 16))
+
+func _rand01(gx: int, gy: int, salt: int) -> float:
+	return float(_hash3(gx, gy, salt) % 10000) / 10000.0
+
+func _is_grass(gx: int, gy: int) -> bool:
+	if gx < 0 or gy < 0 or gx >= WIDTH or gy >= HEIGHT:
+		return false
+	return not plots[gy * WIDTH + gx].tilled
+
+func _is_open_grass(gx: int, gy: int) -> bool:
+	return _is_grass(gx, gy) and can_enter(gx, gy)
+
+func _is_soil(gx: int, gy: int) -> bool:
+	if gx < 0 or gy < 0 or gx >= WIDTH or gy >= HEIGHT:
+		return false
+	return plots[gy * WIDTH + gx].tilled
+
+func _make_tuft(gx: int, gy: int, salt: int, cx: float, base_y: float, size_mul: float) -> Dictionary:
+	var v: int = _hash3(gx, gy, salt + 999) % GRASS_KEYS.size()
+	var key: String = GRASS_KEYS[v]
+	var sz: Vector2 = AssetRegistry.get_size(key)
+	var h: float = float(GRASS_HEIGHTS[v]) * size_mul * (0.7 + _rand01(gx, gy, salt + 77) * 0.5)
+	var w: float = h * sz.x / maxf(1.0, sz.y)
+	return {"key": key, "cx": cx, "base_y": base_y, "w": w, "h": h}
+
+func render_grass_decor(d: DrawSurface, ox: float, oy: float) -> void:
+	var tufts: Array = []
+	for gy in range(HEIGHT):
+		for gx in range(WIDTH):
+			if not _is_grass(gx, gy) or not can_enter(gx, gy):
+				continue  # soil, or the market tiles under the landmarks
+			var x := ox + float(gx) * 64.0
+			var y := oy + float(gy) * 64.0
+
+			# Allowed area for this tile's own tufts: they may spill into
+			# neighbouring grass, but never onto soil, market tiles or off the farm.
+			var left_lim := x - 10.0 if _is_open_grass(gx - 1, gy) else x + 1.0
+			var right_lim := x + 74.0 if _is_open_grass(gx + 1, gy) else x + 63.0
+			var top_lim := y - 14.0 if _is_open_grass(gx, gy - 1) else y + 1.0
+			var bottom_lim := y + 70.0 if _is_open_grass(gx, gy + 1) else y + 63.0
+
+			# 6-9 crop-sized tufts per tile for a wild, overgrown look.
+			var count: int = 6 + (_hash3(gx, gy, 1) % 4)
+			for i in range(count):
+				var t := _make_tuft(gx, gy, 10 + i, 0.0, 0.0, 1.0)
+				var w: float = float(t["w"])
+				var h: float = float(t["h"])
+				var span_x: float = (right_lim - left_lim) - w
+				var span_y: float = (bottom_lim - top_lim) - h
+				if span_x < 0.0 or span_y < 0.0:
+					# Too big for the free space: shrink to fit.
+					var s: float = minf((right_lim - left_lim) / w, (bottom_lim - top_lim) / h)
+					w *= s
+					h *= s
+					t["w"] = w
+					t["h"] = h
+					span_x = maxf(0.0, (right_lim - left_lim) - w)
+					span_y = maxf(0.0, (bottom_lim - top_lim) - h)
+				t["cx"] = left_lim + w * 0.5 + _rand01(gx, gy, 20 + i) * span_x
+				t["base_y"] = top_lim + h + _rand01(gx, gy, 30 + i) * span_y
+				tufts.append(t)
+
+			# Edge tufts that reach slightly over neighbouring soil.
+			var ov := GRASS_SOIL_OVERLAP
+			if _is_soil(gx, gy - 1):  # soil above: tips poke up over its bottom edge
+				for i in range(4):
+					var t := _make_tuft(gx, gy, 40 + i, 0.0, 0.0, 1.0)
+					t["cx"] = x + 8.0 + float(i) * 16.0 + (_rand01(gx, gy, 45 + i) - 0.5) * 10.0
+					t["base_y"] = y + float(t["h"]) - ov
+					tufts.append(t)
+			if _is_soil(gx, gy + 1):  # soil below: bases sit a little on the soil
+				for i in range(4):
+					var t := _make_tuft(gx, gy, 50 + i, 0.0, 0.0, 1.0)
+					t["cx"] = x + 8.0 + float(i) * 16.0 + (_rand01(gx, gy, 55 + i) - 0.5) * 10.0
+					t["base_y"] = y + 64.0 + ov * 0.5
+					tufts.append(t)
+			if _is_soil(gx - 1, gy):  # soil left
+				for i in range(4):
+					var t := _make_tuft(gx, gy, 60 + i, 0.0, 0.0, 1.0)
+					t["cx"] = x + float(t["w"]) * 0.5 - ov
+					t["base_y"] = y + 18.0 + float(i) * 15.0 + (_rand01(gx, gy, 65 + i) - 0.5) * 8.0
+					tufts.append(t)
+			if _is_soil(gx + 1, gy):  # soil right
+				for i in range(4):
+					var t := _make_tuft(gx, gy, 70 + i, 0.0, 0.0, 1.0)
+					t["cx"] = x + 64.0 - float(t["w"]) * 0.5 + ov
+					t["base_y"] = y + 18.0 + float(i) * 15.0 + (_rand01(gx, gy, 75 + i) - 0.5) * 8.0
+					tufts.append(t)
+
+	# Draw back to front so lower tufts overlap higher ones.
+	tufts.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return float(a["base_y"]) < float(b["base_y"]))
+	for t in tufts:
+		var tex: Texture2D = AssetRegistry.get_tex(str(t["key"]))
+		if tex == null:
+			continue
+		var w: float = float(t["w"])
+		var h: float = float(t["h"])
+		d.draw_texture_at(tex, float(t["cx"]) - w * 0.5, float(t["base_y"]) - h, w, h)
+
 func render_farm_content(canvas: CanvasItem) -> void:
 	var center_x := ORIGIN_X + float(WIDTH) * 32.0
 	var center_y := ORIGIN_Y + float(HEIGHT) * 32.0
@@ -319,6 +435,8 @@ func render_farm_content(canvas: CanvasItem) -> void:
 	for y in range(HEIGHT):
 		for x in range(WIDTH):
 			plots[y * WIDTH + x].render_base(d, ox + float(x) * 64.0, oy + float(y) * 64.0, x, y)
+
+	render_grass_decor(d, ox, oy)
 
 	# Seed Stand landmark at (1, 1)
 	var sx := ox + 64.0

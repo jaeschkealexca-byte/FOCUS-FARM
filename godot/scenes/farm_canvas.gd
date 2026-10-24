@@ -29,6 +29,8 @@ func _draw() -> void:
 		for x in range(FarmWorldData.WIDTH):
 			world.plots[y * FarmWorldData.WIDTH + x].render_base(d, ox + float(x) * 64.0, oy + float(y) * 64.0, x, y)
 
+	world.render_grass_decor(d, ox, oy)
+
 	# Seed Stand landmark at (1, 1)
 	var sx := ox + 64.0
 	var sy := oy + 64.0
