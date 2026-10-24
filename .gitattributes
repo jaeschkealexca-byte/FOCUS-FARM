@@ -4,3 +4,4 @@
 godot/assets/sprites/time_panel.png -filter -diff -merge binary
 godot/assets/sprites/sky_*.png -filter -diff -merge binary
 godot/assets/sprites/badge_*.png -filter -diff -merge binary
+godot/assets/sprites/coin_panel.png -filter -diff -merge binary

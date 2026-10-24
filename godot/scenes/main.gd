@@ -14,9 +14,11 @@ var inventory_window: InventoryWindowUI
 var seed_selector: SeedSelectorUI
 const TimeHudScript := preload("res://ui/time_hud.gd")
 var time_hud = TimeHudScript.new()
+const CoinHudScript := preload("res://ui/coin_hud.gd")
+var coin_hud = CoinHudScript.new()
 
 ## The right-hand button column starts below the corner clock.
-const RIGHT_Y := 190.0
+const RIGHT_Y := 274.0
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
@@ -404,10 +406,16 @@ func _coin_shop_button_bounds() -> Dictionary:
 func _is_coin_shop_button_hovered(mx: float, my: float) -> bool:
 	if shop.visible or focus.visible:
 		return false
-	var b: Dictionary = _coin_shop_button_bounds()
-	return _in_rect(mx, my, float(b["x"]), float(b["y"]), float(b["w"]), float(b["h"]))
+	return coin_hud.is_hovered(world.coins, mx, my)
 
 func _render_coin_hud(d: DrawSurface, mx: float, my: float) -> void:
+	# On the farm: wooden gold-coin bar under the clock (grows with the balance).
+	# While the shop is open the small centred badge below is used instead.
+	if not shop.visible:
+		coin_hud.right_x = 1920.0 - time_hud.margin - 6.0
+		coin_hud.top_y = 206.0
+		coin_hud.render(d.canvas, world.coins, mx, my)
+		return
 	var balance_text: String = "%d Coins" % world.coins
 	var font_size: int = 18 if shop.visible else 20
 	var text_w: float = ceilf(DrawSurface.measure_text(balance_text, font_size))
