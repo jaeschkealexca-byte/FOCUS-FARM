@@ -13,3 +13,6 @@ godot/export_presets.cfg
 *.translation
 override.cfg
 godot/override.cfg
+
+# macOS Finder metadata
+.DS_Store

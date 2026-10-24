@@ -21,13 +21,6 @@ func _ready() -> void:
 func _init_crops() -> void:
 	var defs: Array[Dictionary] = [
 		{
-			"id": "cabbage", "name": "Cabbage", "seedName": "Cabbage Seeds", "season": "Spring",
-			"buyPrice": 20, "sellPrice": 45, "growthMinutes": 1.0 / 6.0,
-			"seasonIcon": "🌸", "seasonColor": "#b85d85",
-			"description": "Crisp and leafy. A hardy spring staple that grows into dense, ruffled heads.",
-			"primaryColor": "#72ba59", "accentColor": "#9edb84", "foliageColor": "#53913d",
-		},
-		{
 			"id": "garlic", "name": "Garlic", "seedName": "Garlic Seeds", "season": "Spring",
 			"buyPrice": 20, "sellPrice": 50, "growthMinutes": 1.0 / 6.0,
 			"seasonIcon": "🌸", "seasonColor": "#b85d85",
@@ -229,8 +222,7 @@ func _init_crops() -> void:
 
 	for def in defs:
 		crops[def["id"]] = def
-		if def["id"] != "cabbage":
-			crop_list.append(def)
+		crop_list.append(def)
 
 func get_crop_def(id: Variant) -> Dictionary:
 	if id == null or str(id).is_empty():
@@ -310,12 +302,6 @@ func draw_seed_packet(d: DrawSurface, crop: Dictionary, x: float, y: float, w: f
 func draw_crop_emblem(d: DrawSurface, crop: Dictionary, cx: float, cy: float) -> void:
 	var id := str(crop.get("id", "carrot"))
 	match id:
-		"cabbage":
-			d.draw_circle_styled(cx - 7.0, cy, 10.0, {"fill": "#5e9f4a"})
-			d.draw_circle_styled(cx + 7.0, cy, 10.0, {"fill": "#5e9f4a"})
-			d.draw_circle_styled(cx, cy + 4.0, 11.0, {"fill": "#6cb854"})
-			d.draw_circle_styled(cx, cy - 1.0, 9.0, {"fill": "#94e07b", "stroke": "#498138", "lineWidth": 1.0})
-			d.draw_circle_styled(cx + 1.0, cy - 2.0, 5.0, {"fill": "#c0f2ab"})
 		"carrot":
 			d.draw_line_styled(cx, cy - 4.0, cx - 7.0, cy - 15.0, {"stroke": "#4a9939", "lineWidth": 2.0})
 			d.draw_line_styled(cx, cy - 4.0, cx, cy - 17.0, {"stroke": "#5ebb49", "lineWidth": 2.0})

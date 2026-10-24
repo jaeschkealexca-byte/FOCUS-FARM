@@ -13,7 +13,7 @@ var zoom: float = 1.0
 var player := FarmPlayerData.new()
 var plots: Array[CropPlotData] = []
 
-var seeds: Dictionary = {"carrot": 3, "cabbage": 2, "strawberry": 1}
+var seeds: Dictionary = {"carrot": 3, "strawberry": 1}
 var produce: Dictionary = {}
 var selected_seed_id: String = "carrot"
 var toolbar_slots: Array = [null, null, null, null]
@@ -590,3 +590,25 @@ func restore(s: Dictionary) -> void:
 					target.watered = bool(sp_dict.get("watered", false)) and target.planted
 					target.growth = float(sp_dict.get("growth", 0.0)) if target.planted else 0.0
 					target.preview_growth = null
+
+	_remove_retired_crops()
+
+## Crops that were removed from the game. Old saves may still contain them.
+const RETIRED_CROPS := ["cabbage"]
+
+func _remove_retired_crops() -> void:
+	for id in RETIRED_CROPS:
+		seeds.erase(id)
+		produce.erase(id)
+		if selected_seed_id == id:
+			selected_seed_id = "carrot"
+		for i in range(toolbar_slots.size()):
+			if toolbar_slots[i] == "seed:%s" % id or toolbar_slots[i] == "produce:%s" % id:
+				toolbar_slots[i] = null
+	for p in plots:
+		var plot: CropPlotData = p
+		if plot.planted and RETIRED_CROPS.has(str(plot.crop_id)):
+			plot.planted = false
+			plot.crop_id = null
+			plot.watered = false
+			plot.growth = 0.0
