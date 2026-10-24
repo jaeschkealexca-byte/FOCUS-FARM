@@ -18,7 +18,7 @@ const CoinHudScript := preload("res://ui/coin_hud.gd")
 var coin_hud = CoinHudScript.new()
 
 ## The right-hand button column starts below the corner clock.
-const RIGHT_Y := 274.0
+const RIGHT_Y := 260.0
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS

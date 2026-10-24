@@ -4,18 +4,18 @@ extends RefCounted
 ## three slices — coin cap (fixed), middle bar (stretched) and flower cap (fixed).
 ## Clicking it opens the Seed Shop.
 ##
-## Texture: `res://assets/sprites/coin_panel.png` (294 × 86, pre-scaled to on-screen size).
+## Texture: `res://assets/sprites/coin_panel.png` (247 × 72, pre-scaled to on-screen size).
 
 const TEX_KEY := "coin_panel"
-const TEX_SIZE := Vector2(294.0, 86.0)
-const LEFT_CAP := 120.0          # coin + frame, never stretched
-const RIGHT_CAP_START := 240.0   # flowers + bar end, never stretched
-const BAR_TEXT_LEFT := 96.0      # first pixel of the beige bar (inside the frame)
-const BAR_TEXT_RIGHT_IN_CAP := 26.0  # usable beige bar inside the right cap
-const BAR_CENTER_Y := 48.0
-const MIN_MIDDLE := 24.0
-const PADDING := 14.0
-const FONT_SIZE := 24
+const TEX_SIZE := Vector2(247.0, 72.0)
+const LEFT_CAP := 101.0          # coin + frame, never stretched
+const RIGHT_CAP_START := 202.0   # flowers + bar end, never stretched
+const BAR_TEXT_LEFT := 81.0      # first pixel of the beige bar (inside the frame)
+const BAR_TEXT_RIGHT_IN_CAP := 22.0  # usable beige bar inside the right cap
+const BAR_CENTER_Y := 40.0
+const MIN_MIDDLE := 20.0
+const PADDING := 12.0
+const FONT_SIZE := 20
 const INK := Color("#5b3a29")
 
 ## Right edge and top of the panel, set by main.gd so it sits under the clock.
@@ -59,7 +59,7 @@ func bounds(amount: int) -> Rect2:
 func is_hovered(amount: int, mx: float, my: float) -> bool:
 	var b := bounds(amount)
 	# Only the coin + bar, not the leaves sticking out.
-	return mx >= b.position.x + 8.0 and mx <= b.end.x - 14.0 and my >= b.position.y + 14.0 and my <= b.end.y - 10.0
+	return mx >= b.position.x + 7.0 and mx <= b.end.x - 12.0 and my >= b.position.y + 12.0 and my <= b.end.y - 8.0
 
 func render(canvas: CanvasItem, amount: int, mx: float, my: float) -> void:
 	var tex: Texture2D = AssetRegistry.get_tex(TEX_KEY)
