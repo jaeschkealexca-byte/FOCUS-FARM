@@ -5,22 +5,22 @@ extends RefCounted
 ## a 12-hour clock and a round weather badge. Click it to switch hemisphere.
 ##
 ## Textures live in `res://assets/sprites/` (time_panel, sky_*, badge_*) and are
-## pre-scaled to their on-screen size, so they are drawn 1:1.
-## Optional font: drop `PixelifySans.ttf` into `res://assets/fonts/` for the pixel look.
+## pre-scaled to their on-screen size (65 % of the kit), so they are drawn 1:1.
+## Font: a rounded system font (Arial Rounded MT Bold on macOS). Optional: drop
+## `PixelifySans.ttf` into `res://assets/fonts/` to use that instead.
 
-const PANEL_SIZE := Vector2(389.0, 250.0)
-const SKY_POS := Vector2(64.0, 42.0)
-const SKY_SIZE := Vector2(65.0, 66.0)
-const DATE_CX := 233.0
-const DATE_TOP := 41.0
-const DATE_BOTTOM := 115.0
-const TIME_CENTER := Vector2(171.0, 175.0)
-const BADGE_CENTER := Vector2(328.0, 172.0)
-const BADGE_SIZE := 58.0
+const PANEL_SIZE := Vector2(316.0, 203.0)
+const SKY_POS := Vector2(52.0, 34.0)
+const SKY_SIZE := Vector2(53.0, 53.0)
+const DATE_CX := 189.0
+const DATE_TOP := 33.0
+const DATE_BOTTOM := 94.0
+const TIME_CENTER := Vector2(139.0, 142.0)
+const BADGE_CENTER := Vector2(267.0, 140.0)
+const BADGE_SIZE := 47.0
 
 const INK := Color("#5b3a29")
 const INK_SOFT := Color("#7a5238")
-const EMBOSS := Color("#fff4de")
 
 const FONT_PATH := "res://assets/fonts/PixelifySans.ttf"
 
@@ -37,7 +37,7 @@ func bounds() -> Rect2:
 
 func is_hovered(mx: float, my: float) -> bool:
 	var b := bounds()
-	return mx >= b.position.x + 50.0 and mx <= b.end.x - 30.0 and my >= b.position.y + 30.0 and my <= b.end.y - 40.0
+	return mx >= b.position.x + 40.0 and mx <= b.end.x - 24.0 and my >= b.position.y + 24.0 and my <= b.end.y - 32.0
 
 ## Returns true when the click landed on the clock (and toggled the hemisphere).
 func handle_click(mx: float, my: float) -> bool:
@@ -57,17 +57,17 @@ func render(canvas: CanvasItem, d: DrawSurface, mx: float, my: float) -> void:
 
 	# Weekday + day of season
 	var date_mid := (DATE_TOP + DATE_BOTTOM) * 0.5
-	_text(canvas, RealCalendar.weekday_str, o.x + DATE_CX, o.y + date_mid - 13.0, 34, INK, "center")
-	_text(canvas, "%s · Day %d" % [RealCalendar.season, RealCalendar.day_of_season], o.x + DATE_CX, o.y + date_mid + 19.0, 14, INK_SOFT, "center")
+	_text(canvas, RealCalendar.weekday_str, o.x + DATE_CX, o.y + date_mid - 10.0, 27, INK, "center")
+	_text(canvas, "%s · Day %d" % [RealCalendar.season, RealCalendar.day_of_season], o.x + DATE_CX, o.y + date_mid + 14.0, 12, INK_SOFT, "center")
 
 	# 12-hour clock: big digits + small AM/PM, centred together
 	var font := _get_font()
-	var big_w := font.get_string_size(RealCalendar.clock_str, HORIZONTAL_ALIGNMENT_LEFT, -1, 36).x
-	var small_w := font.get_string_size(RealCalendar.meridiem, HORIZONTAL_ALIGNMENT_LEFT, -1, 22).x
-	var gap := 8.0
+	var big_w := font.get_string_size(RealCalendar.clock_str, HORIZONTAL_ALIGNMENT_LEFT, -1, 29).x
+	var small_w := font.get_string_size(RealCalendar.meridiem, HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x
+	var gap := 5.0
 	var left := o.x + TIME_CENTER.x - (big_w + gap + small_w) * 0.5
-	_text(canvas, RealCalendar.clock_str, left, o.y + TIME_CENTER.y, 36, INK, "left")
-	_text(canvas, RealCalendar.meridiem, left + big_w + gap, o.y + TIME_CENTER.y + 3.0, 22, INK, "left")
+	_text(canvas, RealCalendar.clock_str, left, o.y + TIME_CENTER.y, 29, INK, "left")
+	_text(canvas, RealCalendar.meridiem, left + big_w + gap, o.y + TIME_CENTER.y + 2.0, 17, INK, "left")
 
 	if is_hovered(mx, my):
 		_render_tooltip(d, weather)
@@ -107,10 +107,11 @@ func _get_font() -> Font:
 			pixel.variation_opentype = {"wght": 700}
 			_font = pixel
 			return _font
-	var bold := FontVariation.new()
-	bold.base_font = ThemeDB.fallback_font
-	bold.variation_embolden = 0.9
-	_font = bold
+	var rounded := SystemFont.new()
+	rounded.font_names = PackedStringArray(["Arial Rounded MT Bold", "Avenir Next Rounded", "Nunito", "Avenir Next", "Helvetica Neue", "Arial"])
+	rounded.font_weight = 700
+	rounded.antialiasing = TextServer.FONT_ANTIALIASING_GRAY
+	_font = rounded
 	return _font
 
 func _text(canvas: CanvasItem, text: String, x: float, y: float, size: int, color: Color, align: String) -> void:
@@ -123,7 +124,6 @@ func _text(canvas: CanvasItem, text: String, x: float, y: float, size: int, colo
 		dx -= w
 	var dy := y + (font.get_ascent(size) - font.get_descent(size)) * 0.5
 	var pos := Vector2(roundf(dx), roundf(dy))
-	canvas.draw_string(font, pos + Vector2(0.0, 1.0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, size, EMBOSS)
 	canvas.draw_string(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, size, color)
 
 # ---------------------------------------------------------------------------

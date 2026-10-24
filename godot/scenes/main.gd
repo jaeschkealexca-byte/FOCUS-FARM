@@ -16,7 +16,7 @@ const TimeHudScript := preload("res://ui/time_hud.gd")
 var time_hud = TimeHudScript.new()
 
 ## The right-hand button column starts below the corner clock.
-const RIGHT_Y := 236.0
+const RIGHT_Y := 190.0
 
 func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
